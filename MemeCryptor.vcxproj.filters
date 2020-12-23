@@ -24,6 +24,9 @@
     <ClCompile Include="Crypto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Chacha.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Persistent.h">
@@ -35,20 +38,8 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\Desktop\Bitmap.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Resource.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="fuck1.bin">
-      <Filter>Resource Files</Filter>
-    </None>
+    <ClInclude Include="Chacha.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
