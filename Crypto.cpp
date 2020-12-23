@@ -18,3 +18,8 @@ void cryptCleanUp() {
 		CryptReleaseContext(hCryptProv, 0);
 	}
 }
+
+
+//- Hard - coded public key
+//- Server public key(Github)
+//- Random number as Chacha key->encrypt file + flip bytes->random number xor with last edit time->encrypted with RSA public->embedded into the image in the front
