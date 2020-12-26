@@ -18,14 +18,18 @@ int main()
 		return -1;
 	}
 
-	typedef std::chrono::high_resolution_clock Clock;
-	typedef std::chrono::milliseconds milliseconds;
-	Clock::time_point t0 = Clock::now();
+	//HANDLE file = CreateFileA("C:\\Users\\DongChuong\\Desktop\\picture_compress.bmp", GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	fileEncrypt("C:\\Users\\DongChuong\\Desktop\\Reverse_Engineering\\RAWFILE.bin", key, nonce);
-	Clock::time_point t1 = Clock::now();
-	milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
-	std::cout << ms.count() << "ms\n";
+	//encryptKey(file, key, nonce);
+	//CloseHandle(file);
+	//typedef std::chrono::high_resolution_clock Clock;
+	//typedef std::chrono::milliseconds milliseconds;
+	//Clock::time_point t0 = Clock::now();
+
+	//fileEncrypt("C:\\Users\\DongChuong\\Desktop\\Reverse_Engineering\\RAWFILE.bin", key, nonce);
+	//Clock::time_point t1 = Clock::now();
+	//milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
+	//std::cout << ms.count() << "ms\n";
 
 	cryptCleanUp();
 	return 0;

