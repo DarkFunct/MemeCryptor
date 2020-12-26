@@ -291,7 +291,6 @@ DWORD getLengthString(LPCSTR oriFileName) {
 	return i;
 }
 
-// Note to self: delete infile after encryption
 int fileEncrypt(LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
 	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	DWORD fileSize = GetFileSize(inFile, NULL);
@@ -345,6 +344,7 @@ CLEANUP:
 	}
 	if (inFile) {
 		CloseHandle(inFile);
+		DeleteFileA(oriFileName);
 	}
 	if (outFile) {
 		CloseHandle(outFile);
