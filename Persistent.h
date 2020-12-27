@@ -7,10 +7,9 @@
 #define __Persistent_h__
 extern LPCSTR tempFile_path;
 #endif
+int createTemp(HCRYPTPROV hCryptProv);
 
-int createTemp();
 
-
-int mainPersist(BOOL start);
+int mainPersist(BOOL start, HCRYPTPROV hCryptProv);
 
 

