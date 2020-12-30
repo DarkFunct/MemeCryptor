@@ -1,13 +1,14 @@
 #pragma once
 #include "windows.h"
-#include <iostream>
-#include <stdio.h>
 #include "Chacha.h"
 #include "shlwapi.h"
+#include "File.h"
 #pragma comment (lib, "Shlwapi.lib")
 #ifndef __Crypto_h__
 #define __Crypto_h__
+
 extern BYTE publicKeyBlob[532];
+
 int cryptInit();
 int generateKeyNonce(HCRYPTPROV hCryptProv, BYTE* key, BYTE* nonce);
 void cryptCleanUp();

