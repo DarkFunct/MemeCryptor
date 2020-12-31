@@ -349,7 +349,7 @@ int initThreadStruct() {
 
 	TempGetNativeSystemInfo(&systemInfo);
 
-	pThreadStruct->threadCount = 1;
+	pThreadStruct->threadCount = systemInfo.dwNumberOfProcessors;
 
 	HANDLE* buffer = (HANDLE*)calloc(4 * pThreadStruct->threadCount, 1);
 	if (!buffer) {
