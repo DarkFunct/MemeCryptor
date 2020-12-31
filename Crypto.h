@@ -1,6 +1,7 @@
 #pragma once
 #include "Chacha.h"
 #include "File.h"
+#include <stdio.h>
 #ifndef __Crypto_h__
 #define __Crypto_h__
 

