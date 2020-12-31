@@ -24,8 +24,8 @@ int beginEncrypt() {
 	free(driveBuffer);
 	return 0;
 }
-
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
+//2:30 for AppData
+int main() {
 	if (initAPIArray() == -1) {
 		return -1;
 	}
@@ -47,7 +47,5 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	cryptCleanUp();
 	cleanExplorerLL();
 	persistCleanUp();
-
 	return 0;
-
 }

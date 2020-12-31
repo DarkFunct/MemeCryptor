@@ -3,9 +3,6 @@
 #ifndef __Threading_h__
 #define __Threading_h__
 #include "Crypto.h"
-extern LPCSTR ransomNoteContent;
-
-
 struct LL_NODE {
 	LPSTR dirName;
 	struct LL_NODE* nextNode;

