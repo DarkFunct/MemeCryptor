@@ -110,6 +110,8 @@ With that said, I am not to be held responsible by anyone to any lost or damaged
 
 [Michael Gillespie](https://twitter.com/demonslay335?lang=en) -  for helping me learn a lot of these techniques and improve my analysis on ransomware samples
 
+[Jiří Vinopal](https://twitter.com/vinopaljiri) - https://github.com/Dump-GUY/Malware-analysis-and-Reverse-engineering/blob/main/kpot2/KPOT.md
+
 [0xastro](https://twitter.com/0xastr0) - https://github.com/0xastro/malwareanalysis/blob/main/Ryuk/Deep%20Dive%20Into%20Ryuk%20Ransomware.md
 
 [VMWare Carbon Black TAU](https://www.carbonblack.com/threat-analysis-unit/) - https://www.carbonblack.com/blog/tau-threat-discovery-conti-ransomware/
