@@ -2,7 +2,7 @@
 
 EXPL_NODE* EXPLORER_ID_LL = NULL;
 
-extern FARPROC APIArray[52];
+extern FARPROC APIArray[54];
 
 MemeCreateToolhelp32Snapshot TempCreateToolhelp32Snapshot;
 MemeProcess32FirstW TempProcess32FirstW;

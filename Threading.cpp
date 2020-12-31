@@ -1,6 +1,6 @@
 #include "Threading.h"
 THREAD_STRUCT threadStruct;
-extern FARPROC APIArray[52];
+extern FARPROC APIArray[54];
 MemelstrcmpA TemplstrcmpA;
 MemeStrStrIA TempStrStrIA;
 MemeCreateFileA TempCreateFileA2;
