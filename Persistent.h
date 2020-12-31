@@ -1,8 +1,6 @@
 #pragma once
 #include "windows.h"
 #include "Threading.h"
-#include <iostream>
-#include <stdio.h>
 
 #ifndef __Persistent_h__
 #define __Persistent_h__

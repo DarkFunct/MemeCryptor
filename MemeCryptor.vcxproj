@@ -149,6 +149,7 @@
     <ClCompile Include="Crypto.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="MemeCryptor.cpp" />
+    <ClCompile Include="PE.cpp" />
     <ClCompile Include="Persistent.cpp" />
     <ClCompile Include="Threading.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="Chacha.h" />
     <ClInclude Include="Crypto.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="PE.h" />
     <ClInclude Include="Persistent.h" />
     <ClInclude Include="resource2.h" />
     <ClInclude Include="Threading.h" />
