@@ -15,15 +15,12 @@ This holds true to these days where I still come across way too many lame ransom
 Just for fun, I decided to see if I could write a sophisticated ransomware using the techniques I have learned from analyzing samples from big families such as **Ryuk** and **Conti**.
 
 
-For me, the best way to understand malware is to program them out myself. I hope by providing my source code for this, I can give other analysts out there a better understanding of ransomware as well as the different techniques that are currently being used.
+For me, the best way to understand malware is to program them out myself. I hope by providing the source code, I can give other analysts out there a better understanding of ransomware as well as the different techniques that they use.
 
 
-Also, most ransomware out there are relatively lame, so I decided to embed the encrypted files in memes just to spice things up.
-
+Also, most ransomware encryptions out there are relatively lame, so I decided to embed the encrypted files in memes just to spice things up.
 
 ## 2. Features
-
-
 ### Persistence
 
 **MemeCryptor** immediately creates a copy of itself in the **Temp** directory under a random name, and it will add this path to *SOFTWARE\Microsoft\Windows\CurrentVersion\Run* to obtain persistence.
@@ -54,7 +51,6 @@ void resolveString(BYTE* buffer, BYTE* key, int size) {
 }
 ```
 
-
 ### Hidden API (PE.cpp)
 
 To hide API, **MemeCryptor** dynamically locates *Kernel32.dll*, goes through the EAT, and finds **GetProcAddress** and **GetModuleHandle**.
@@ -83,7 +79,7 @@ Each **ChaCha20** key is used to encrypt a single file. The encrypted file will 
 ![alt text](/image/meme.bmp)
 
 
-The ****ChaCha20** key is then written into the meme file using this **Steganography** trick I found [here](https://www.codeproject.com/Articles/5524/Hiding-a-text-file-in-a-bmp-file).
+The **ChaCha20** key is then written into the meme file using this **Steganography** trick I found [here](https://www.codeproject.com/Articles/5524/Hiding-a-text-file-in-a-bmp-file).
 
 
 Using this encryption scheme, **MemeCryptor** can encrypt small files up to 100MB in under 1 second. For all files that are bigger than 100MB, the encryption is limited to 1.5 seconds exactly. As a result, it can crawl through the entire system in less than a minute.
@@ -106,11 +102,9 @@ This executables being released are intended to be used solely by reverse engine
 
 The ransomware should only be ran in a VM environment. I accidentally ran it on my PC and encrypted around 200 GB of files before realizing, so please use it carefully.
 
-Even though I have provided a decryptor, I can not 100% guarantee that some file might be corrupted and unretrievable after encryption.
-
+Even though I have provided a decryptor, I can not 100% guarantee whether some file might be corrupted and unretrievable after encryption or not.
 
 With that said, I am not to be held responsible by anyone to any lost or damaged property as a result of using this ransomware.
-
 
 ## 4. Acknowledgement
 
