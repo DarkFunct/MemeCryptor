@@ -25,7 +25,7 @@ int beginEncrypt() {
 	return 0;
 }
 //2:30 for AppData
-int main() {
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
 	if (initAPIArray() == -1) {
 		return -1;
 	}
