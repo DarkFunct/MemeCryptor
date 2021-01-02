@@ -5,7 +5,7 @@
 
 LPCSTR tempFile_path;
 
-extern FARPROC APIArray[54];
+extern FARPROC APIArray[55];
 
 MemeCopyFileA TempCopyFileA1;
 MemeGetTempPathA TempGetTempPathA1;

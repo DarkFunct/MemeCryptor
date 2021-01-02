@@ -34,6 +34,7 @@ typedef DWORD(WINAPI* MemeWaitForMultipleObjects)(DWORD nCount, const HANDLE* lp
 typedef void(WINAPI* MemeDeleteCriticalSection)(LPCRITICAL_SECTION lpCriticalSection);
 typedef void(WINAPI* MemeExitThread)(DWORD dwExitCode);
 typedef void(WINAPI* MemeInitializeCriticalSection)(LPCRITICAL_SECTION lpCriticalSection);
+typedef void(WINAPI* MemeSleep)(DWORD dwMilliseconds);
 
 void threadEncrypt(THREAD_STRUCT* pThreadStruct);
 

